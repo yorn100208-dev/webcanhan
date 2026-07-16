@@ -1,0 +1,2364 @@
+<!DOCTYPE html>
+<html lang="vi-VN" class="dark" data-title-loader="Văn Tiến Khánh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Văn Tiến Khánh - Portfolio Chuyên Nghiệp</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.min.css" rel="stylesheet">
+  
+  <!-- CSS Library assets -->
+  <link rel="stylesheet" href="./assets/css/fuiToast.min.css">
+  <link rel="stylesheet" href="./assets/css/fancybox.css">
+
+  <style>
+    :root {
+      --bg-dark: #030a05;
+      --bg-card: rgba(5, 12, 8, 0.6);
+      --border-color: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(57, 255, 20, 0.4);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #39ff14; /* Matrix Green */
+      --primary-glow: rgba(57, 255, 20, 0.2);
+      --secondary: #00e5ff; /* Matrix Cyan */
+      --secondary-glow: rgba(0, 229, 255, 0.2);
+      --accent: #ffff00; /* Matrix Yellow */
+      --accent-glow: rgba(255, 255, 0, 0.2);
+      --font-outfit: 'Outfit', sans-serif;
+      --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+      --font-syne: 'Syne', sans-serif;
+      --font-space: 'Space Grotesk', sans-serif;
+      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-jakarta);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* Canvas background particles */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Floating blobs in background */
+    .blob-container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -3;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.5;
+      animation: float 25s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      top: -10%;
+      right: 10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+    }
+
+    .blob-2 {
+      bottom: -10%;
+      left: 5%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%);
+      animation-delay: -5s;
+    }
+
+    .blob-3 {
+      top: 40%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        transform: translate(50px, -30px) scale(1.1);
+      }
+      100% {
+        transform: translate(-30px, 40px) scale(0.95);
+      }
+    }
+
+    /* Container wrapper */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(13, 20, 38, 0.4);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .logo-glow {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--secondary);
+      box-shadow: 0 0 10px var(--secondary);
+      animation: pulse 2s infinite;
+    }
+
+    .logo-text {
+      font-family: var(--font-syne);
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .vibe-selector {
+      display: flex;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.35rem 0.55rem;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      align-items: center;
+    }
+
+    .vibe-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      padding: 0;
+    }
+
+    .vibe-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .vibe-btn.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      transform: scale(1.1);
+    }
+
+    .vibe-btn[data-vibe="cyber"] { background: linear-gradient(135deg, #8b5cf6, #06b6d4); }
+    .vibe-btn[data-vibe="sunset"] { background: linear-gradient(135deg, #ff007f, #ff7c00); }
+    .vibe-btn[data-vibe="matrix"] { background: linear-gradient(135deg, #39ff14, #00e5ff); }
+    .vibe-btn[data-vibe="hyper"] { background: linear-gradient(135deg, #2979ff, #7c4dff); }
+
+    .nav-time {
+      font-family: var(--font-space);
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.4rem 0.8rem;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* Running Marquee Ticker */
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      background: rgba(13, 20, 38, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      padding: 0.65rem 0;
+      margin-bottom: 2.5rem;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-content {
+      display: inline-block;
+      animation: marquee 25s linear infinite;
+    }
+
+    .marquee-content span {
+      font-family: var(--font-space);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--secondary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+
+    /* Layout grid */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+      .profile-card {
+        position: static !important;
+        height: auto !important;
+      }
+    }
+
+    /* Sidebar profile card */
+    .profile-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: sticky;
+      top: 2rem;
+      height: fit-content;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    .profile-card::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0.15;
+      transition: var(--transition);
+    }
+
+    .profile-card:hover::after {
+      opacity: 0.55;
+      filter: blur(8px);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .crown3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: auto;
+      transform: translate(-50%, -50%) scale(1.15);
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+      animation: crownPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes crownPulse {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1.15);
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 12px rgba(0, 191, 255, 0.3));
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.18);
+        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 25px rgba(0, 191, 255, 0.5));
+      }
+    }
+
+
+    .profile-name {
+      font-family: var(--font-syne);
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(to right, #ffffff, #e2e8f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+      text-align: center;
+    }
+
+    .verified-badge {
+      width: 22px;
+      height: 22px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.25rem;
+      filter: drop-shadow(0 0 5px var(--secondary-glow));
+      animation: pulse-verified 2.5s infinite alternate ease-in-out;
+      cursor: pointer;
+      transition: var(--transition);
+      -webkit-text-fill-color: initial;
+    }
+
+    .verified-badge:hover {
+      transform: scale(1.2) rotate(15deg);
+      filter: drop-shadow(0 0 12px var(--secondary));
+    }
+
+    @keyframes pulse-verified {
+      0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 3px var(--secondary-glow));
+      }
+      100% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 8px var(--secondary-glow));
+      }
+    }
+
+    .profile-title {
+      font-family: var(--font-space);
+      font-size: 0.95rem;
+      color: var(--secondary);
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.5px;
+    }
+
+    .profile-bio {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      width: 100%;
+    }
+
+    .profile-info-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .profile-info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: left;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .profile-info-item i {
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+
+    .profile-socials {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .social-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+      border-color: transparent;
+    }
+
+    /* Music Player Widget */
+    .music-widget {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      z-index: 1;
+    }
+
+    .music-widget::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .music-widget:hover::after {
+      opacity: 0.3;
+    }
+
+    .music-widget:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(6, 182, 212, 0.2);
+    }
+
+    .music-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--secondary-glow);
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .music-widget:not(.paused) .music-icon-box {
+      animation: spin 3s linear infinite;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+      color: white;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .music-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .music-status {
+      font-size: 0.75rem;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .music-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-main);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    /* Wave visualizer */
+    .music-wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 20px;
+    }
+
+    .music-wave span {
+      width: 2px;
+      background: var(--secondary);
+      border-radius: 2px;
+      animation: bounce 1s infinite alternate;
+      height: 5px;
+    }
+
+    .music-wave span:nth-child(2) { animation-delay: 0.2s; height: 10px; }
+    .music-wave span:nth-child(3) { animation-delay: 0.4s; height: 15px; }
+    .music-wave span:nth-child(4) { animation-delay: 0.6s; height: 8px; }
+
+    @keyframes bounce {
+      from { height: 3px; }
+      to { height: 18px; }
+    }
+
+    .music-widget.paused .music-wave span {
+      animation: none;
+      height: 3px;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Dynamic Banner panel */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.05));
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+      z-index: 1;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      top: -50px;
+      right: -50px;
+      background: var(--primary);
+      opacity: 0.1;
+      filter: blur(50px);
+      border-radius: 50%;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0.15;
+      transition: var(--transition);
+    }
+
+    .hero-banner:hover::after {
+      opacity: 0.55;
+      filter: blur(8px);
+    }
+
+    .hero-greeting {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-greeting i {
+      animation: wave-hand 2.5s infinite;
+      transform-origin: 70% 70%;
+      display: inline-block;
+    }
+
+    @keyframes wave-hand {
+      0%, 100% { transform: rotate( 0.0deg) }
+      10% { transform: rotate(14.0deg) }
+      20% { transform: rotate(-8.0deg) }
+      30% { transform: rotate(14.0deg) }
+      40% { transform: rotate(-4.0deg) }
+      50% { transform: rotate(10.0deg) }
+      60% { transform: rotate( 0.0deg) }
+    }
+
+    .hero-name-anim {
+      font-family: var(--font-syne);
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .hero-name-anim {
+        font-size: 2rem;
+      }
+    }
+
+    .typing-text {
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      border-right: 3px solid var(--secondary);
+      padding-right: 5px;
+      animation: blink 0.75s step-end infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: var(--primary); }
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      max-width: 600px;
+      font-size: 1rem;
+    }
+
+    /* Tabs navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem;
+      border-radius: 18px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: var(--font-space);
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+      color: var(--text-main);
+      border: 1px solid var(--primary);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+    }
+
+    .tab-btn.active i {
+      color: var(--primary);
+    }
+
+    /* Tab content panels */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-family: var(--font-syne);
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title i {
+      color: var(--primary);
+    }
+
+    /* Glass card styles */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(139, 92, 246, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Bio/About Section Styling */
+    .bio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: 768px) {
+      .bio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: var(--transition);
+    }
+
+    .stat-box:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(6, 182, 212, 0.3);
+      transform: scale(1.02);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-glow);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 8px 16px rgba(139, 92, 246, 0.1);
+    }
+
+    .stat-num {
+      font-family: var(--font-space);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: linear-gradient(135deg, #ffffff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Skills Panel */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .skill-card {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .skill-card:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--border-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 15px 30px rgba(139, 92, 246, 0.15);
+    }
+
+    .skill-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transition: var(--transition);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .skill-card:hover .skill-icon {
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 10px 20px rgba(6, 182, 212, 0.2);
+    }
+
+    .skill-name {
+      font-family: var(--font-space);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .skill-level {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.25rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Projects panel */
+    .project-filters {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: var(--font-space);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: transparent;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .project-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-banner {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .project-banner i {
+      font-size: 3.5rem;
+      color: var(--text-main);
+      opacity: 0.4;
+      transition: var(--transition);
+    }
+
+    .project-card:hover .project-banner i {
+      transform: scale(1.2);
+      opacity: 0.7;
+    }
+
+    .project-tags {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .project-tag {
+      background: rgba(13, 20, 38, 0.8);
+      backdrop-filter: blur(5px);
+      color: var(--text-main);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .project-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .project-title {
+      font-family: var(--font-outfit);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .project-link:hover {
+      color: var(--primary);
+    }
+
+    /* News list styles */
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .news-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .news-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-hover);
+      box-shadow: 0 15px 30px var(--primary-glow);
+    }
+    .news-image-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      overflow: hidden;
+    }
+    .news-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .news-card:hover .news-image {
+      transform: scale(1.05);
+    }
+    .news-card-content {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .news-card-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .news-card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+    .news-card-summary {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+    .news-card-link {
+      margin-top: auto;
+      font-size: 0.9rem;
+      color: var(--secondary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      width: fit-content;
+      transition: var(--transition);
+    }
+    .news-card-link:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    #news-modal .modal-content {
+      max-width: 550px;
+      text-align: left;
+    }
+
+    /* Payment / Donate Tab */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .payment-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bank-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bank-card::after {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      bottom: -60px;
+      right: -60px;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .bank-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .bank-name {
+      font-family: var(--font-space);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+
+    .bank-logo {
+      font-size: 1.5rem;
+      color: var(--secondary);
+    }
+
+    .bank-number {
+      font-family: monospace;
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .copy-btn:hover {
+      color: var(--primary);
+    }
+
+    .bank-holder {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .qr-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .qr-card:hover {
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .qr-icon {
+      font-size: 3rem;
+      color: var(--secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-title {
+      font-family: var(--font-space);
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .qr-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal for QR */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2.2rem;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      transform: scale(0.9);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      color: var(--text-main);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .qr-image-display {
+      width: 250px;
+      height: 250px;
+      background: white;
+      border-radius: 16px;
+      padding: 10px;
+      margin: 1.5rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-image-display img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Footer styling */
+    .footer {
+      margin-top: 4rem;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-link:hover {
+      color: var(--primary);
+    }
+
+    /* Toast Notification styles */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(13, 20, 38, 0.8);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+      color: var(--text-main);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .toast.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      color: var(--secondary);
+      font-size: 1.3rem;
+    }
+
+    .toast-message {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Audio wave elements animation pulse */
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(6, 182, 212, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+      }
+    }
+
+    /* Terminal Styles */
+    .terminal-card {
+      border: 1px solid rgba(0, 255, 128, 0.15) !important;
+      background: rgba(5, 7, 15, 0.9) !important;
+      position: relative;
+    }
+    .terminal-card:hover {
+      border-color: rgba(0, 255, 128, 0.4) !important;
+      box-shadow: 0 15px 40px rgba(0, 255, 128, 0.08) !important;
+    }
+    .terminal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .terminal-body::-webkit-scrollbar-thumb {
+      background: rgba(0, 255, 128, 0.2);
+      border-radius: 4px;
+    }
+    .terminal-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 255, 128, 0.5);
+    }
+    
+    /* Timeline styles */
+    .timeline-container {
+      position: relative;
+      padding-left: 2rem;
+      border-left: 2px solid rgba(255, 255, 255, 0.06);
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: calc(-2rem - 6px);
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+      transition: var(--transition);
+    }
+    .timeline-item:hover .timeline-dot {
+      background: var(--secondary);
+      box-shadow: 0 0 12px var(--secondary);
+      transform: scale(1.3);
+    }
+    .timeline-year {
+      font-family: var(--font-space);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+    }
+    .timeline-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Skills details styling */
+    .skills-section-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .skills-group-title {
+      font-family: var(--font-syne);
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 1.25rem;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .skill-card-detailed {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+    .skill-card-detailed:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--border-hover);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(139, 92, 246, 0.15);
+    }
+    .skill-circle-wrapper {
+      position: relative;
+      width: 70px;
+      height: 70px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .skill-circle-wrapper svg {
+      transform: rotate(-90deg);
+    }
+    .skill-circle-inner-icon {
+      position: absolute;
+      font-size: 1.5rem;
+      transition: var(--transition);
+    }
+    .skill-card-detailed:hover .skill-circle-inner-icon {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle background -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Ambient blur blobs background -->
+  <div class="blob-container">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="container">
+
+    <!-- Header Navbar -->
+    <header class="navbar">
+      <a href="#" class="logo-container">
+        <div class="logo-glow"></div>
+        <div class="logo-text">VTK<span>.DEV</span></div>
+      </a>
+      <div style="display: flex; align-items: center; gap: 0.8rem;">
+        <div class="vibe-selector">
+          <button class="vibe-btn" data-vibe="cyber" title="Cyber Fusion"></button>
+          <button class="vibe-btn" data-vibe="sunset" title="Neon Sunset"></button>
+          <button class="vibe-btn active" data-vibe="matrix" title="Acid Matrix"></button>
+          <button class="vibe-btn" data-vibe="hyper" title="Hyper Blue"></button>
+        </div>
+        <div class="nav-time" id="clock-display">
+          <i class="ri-time-line"></i> 00:00:00
+        </div>
+      </div>
+    </header>
+
+    <!-- Running Marquee Ticker -->
+    <div class="marquee-container">
+      <div class="marquee-content">
+        <span>CREATIVE DEVELOPER • AUTOMATION ARCHITECT • TELEGRAM BOT EXPERT • WEB DESIGNER • OPEN SOURCE CONTRIBUTOR • FRONTEND CRAFTSMAN • ALWAYS INNOVATING •&nbsp;</span>
+        <span>CREATIVE DEVELOPER • AUTOMATION ARCHITECT • TELEGRAM BOT EXPERT • WEB DESIGNER • OPEN SOURCE CONTRIBUTOR • FRONTEND CRAFTSMAN • ALWAYS INNOVATING •&nbsp;</span>
+      </div>
+    </div>
+
+    <!-- Layout Grid -->
+    <div class="layout-grid">
+
+      <!-- Left Sidebar Profile Card -->
+      <aside class="profile-card">
+        <div class="avatar-wrapper">
+          <img src="./assets/img/avatar.jpg" alt="Avatar" class="avatar-img" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'">
+          <img src="./assets/img/mong-vuot-rong.png" alt="Crown Border" class="crown3">
+        </div>
+
+        <h1 class="profile-name">
+          Văn Tiến Khánh
+          <svg class="verified-badge" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" title="Tài khoản chính chủ">
+            <defs>
+              <linearGradient id="verified-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--secondary)" />
+                <stop offset="100%" stop-color="var(--primary)" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2.05a2 2 0 0 1 1.73 1l.5.86a2 2 0 0 0 1.73 1l1 .17a2 2 0 0 1 1.45 1.45l.17 1a2 2 0 0 0 1 1.73l.86.5a2 2 0 0 1 0 3.46l-.86.5a2 2 0 0 0-1 1.73l-.17 1a2 2 0 0 1-1.45 1.45l-1 .17a2 2 0 0 0-1.73 1l-.5.86a2 2 0 0 1-3.46 0l-.5-.86a2 2 0 0 0-1.73-1l-1-.17a2 2 0 0 1-1.45-1.45l-.17-1a2 2 0 0 0-1-1.73l-.86-.5a2 2 0 0 1 0-3.46l.86-.5a2 2 0 0 0 1 1.73l.17-1a2 2 0 0 1 1.45-1.45l1-.17a2 2 0 0 0 1.73-1l.5-.86A2 2 0 0 1 12 2.05z" fill="url(#verified-gradient)" />
+            <path d="M9 11.5L11 13.5L15.5 9" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </h1>
+        <p class="profile-title">Full Stack Developer</p>
+        
+        <p class="profile-bio">
+          Đam mê lập trình, xây dựng những trải nghiệm web hiện đại và hiệu quả. Luôn nỗ lực cải tiến bản thân qua từng dòng code. 🚀
+        </p>
+
+        <div class="profile-info-list">
+          <div class="profile-info-item">
+            <i class="ri-map-pin-line"></i>
+            <span>Hà Nội, Việt Nam</span>
+          </div>
+          <div class="profile-info-item">
+            <i class="ri-mail-line"></i>
+            <span>contact@vantienkhanh.com</span>
+          </div>
+          <div class="profile-info-item">
+            <i class="ri-git-branch-line"></i>
+            <span>Freelancer / Developer</span>
+          </div>
+        </div>
+
+        <div class="profile-socials">
+          <a href="#" class="social-btn" title="Facebook"><i class="ri-facebook-fill"></i></a>
+          <a href="#" class="social-btn" title="Github"><i class="ri-github-fill"></i></a>
+          <a href="#" class="social-btn" title="Telegram"><i class="ri-telegram-fill"></i></a>
+          <a href="#" class="social-btn" title="Zalo"><i class="ri-chat-3-line"></i></a>
+        </div>
+
+        <!-- Music Player Widget -->
+        <div class="music-widget paused" id="music-player">
+          <div class="music-icon-box">
+            <i class="ri-music-2-line"></i>
+          </div>
+          <div class="music-info">
+            <div class="music-status">Nhạc Đang Tắt</div>
+            <div class="music-title">Click để bật nhạc thư giãn</div>
+          </div>
+          <div class="music-wave">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Main Content Area -->
+      <main class="main-content">
+
+        <!-- Hero Greeting Banner -->
+        <section class="hero-banner">
+          <div class="hero-greeting">
+            <i class="ri-hand-waving-line"></i> Xin chào bạn đến với thế giới của tôi!
+          </div>
+          <h2 class="hero-name-anim">
+            Tôi&nbsp;là <span class="typing-text" id="typewriter">Văn Tiến Khánh</span>
+          </h2>
+          <p class="hero-desc">
+            Lập trình viên trẻ đam mê nghiên cứu công nghệ, tự động hóa quy trình và thiết kế giao diện web sáng tạo.
+          </p>
+        </section>
+
+        <!-- Dynamic Tabs Menu -->
+        <nav class="tabs-nav">
+          <button class="tab-btn active" onclick="switchTab(event, 'bio-tab')">
+            <i class="ri-user-smile-line"></i> Giới thiệu
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'projects-tab')">
+            <i class="ri-code-s-slash-line"></i> Dự án
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'payment-tab')">
+            <i class="ri-bank-card-line"></i> Donate
+          </button>
+          <button class="tab-btn" onclick="switchTab(event, 'terminal-tab')">
+            <i class="ri-terminal-box-line"></i> Terminal
+          </button>
+        </nav>
+
+        <!-- Tab 1: Bio -->
+        <div id="bio-tab" class="tab-panel active">
+          <div class="glass-card">
+            <h3 class="section-title"><i class="ri-user-line"></i> Về tôi</h3>
+            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+              Tôi là một người trẻ đam mê học hỏi và nghiên cứu lập trình tại Hà Nội. Hiện tại tôi đang tập trung tìm hiểu về lập trình Full-Stack, phát triển các bot tự động hóa và xây dựng các dự án cá nhân để rèn luyện kỹ năng mỗi ngày.
+            </p>
+            <div class="bio-grid">
+              <div class="stat-box">
+                <div class="stat-icon"><i class="ri-book-open-line"></i></div>
+                <div>
+                  <div class="stat-num">100%</div>
+                  <div class="stat-label">Đam mê tự học</div>
+                </div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-icon"><i class="ri-briefcase-line"></i></div>
+                <div>
+                  <div class="stat-num">5+</div>
+                  <div class="stat-label">Dự án cá nhân</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h3 class="section-title"><i class="ri-service-line"></i> Dịch vụ thế mạnh</h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem; color: var(--text-muted);">
+              <li style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                <i class="ri-checkbox-circle-line" style="color: var(--secondary); margin-top: 0.2rem;"></i>
+                <div>
+                  <strong style="color: var(--text-main);">Thiết kế Giao diện Landing Page:</strong> Tạo giao diện sắc nét, đáp ứng tốt trên tất cả các dòng máy điện thoại và máy tính.
+                </div>
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                <i class="ri-checkbox-circle-line" style="color: var(--secondary); margin-top: 0.2rem;"></i>
+                <div>
+                  <strong style="color: var(--text-main);">Xây dựng Telegram Bot:</strong> Lập trình hệ thống bot quản lý tự động, webhook đẩy thông báo, hỗ trợ thanh toán tự động qua API ngân hàng.
+                </div>
+              </li>
+              <li style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                <i class="ri-checkbox-circle-line" style="color: var(--secondary); margin-top: 0.2rem;"></i>
+                <div>
+                  <strong style="color: var(--text-main);">Tối ưu SEO & Tốc độ Web:</strong> Đưa điểm hiệu năng Lighthouse lên tối đa, cấu hình các thẻ tối ưu tìm kiếm Google.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Timeline Achievements -->
+          <div class="glass-card">
+            <h3 class="section-title"><i class="ri-line-chart-line"></i> Hành trình phát triển</h3>
+            <div class="timeline-container">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2023</div>
+                <div class="timeline-title">Khởi đầu & Đam mê tự học</div>
+                <div class="timeline-desc">Tiếp cận lập trình cơ bản, xây dựng các kịch bản tự động hóa đơn giản bằng Python và tìm hiểu cấu trúc Web.</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2024</div>
+                <div class="timeline-title">Telegram Bot & Tích hợp API</div>
+                <div class="timeline-desc">Phát triển các Telegram Bot thông minh, kết nối Webhook, tích hợp cổng thanh toán ngân hàng tự động (VietQR).</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2025</div>
+                <div class="timeline-title">Nâng cao Full-Stack & Freelance</div>
+                <div class="timeline-desc">Thành thạo React.js, Node.js và xây dựng hệ thống phần mềm hiệu năng cao. Thực hiện các dự án ngoài cho khách hàng.</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-year">2026</div>
+                <div class="timeline-title">Tối ưu & Mã nguồn mở</div>
+                <div class="timeline-desc">Ra mắt hệ sinh thái VTK.DEV cá nhân, chia sẻ các sản phẩm open-source chất lượng và tối ưu hóa trải nghiệm người dùng.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guestbook Form & List -->
+          <div class="glass-card">
+            <h3 class="section-title"><i class="ri-chat-smile-line"></i> Lưu bút & Góp ý</h3>
+            <p style="margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.9rem;">
+              Hãy để lại lời chúc, góp ý hoặc một dòng nhắn gửi tại đây để lưu giữ kỷ niệm nhé!
+            </p>
+            <form id="guestbook-form" onsubmit="submitGuestbookMessage(event)" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+              <div style="display: grid; grid-template-columns: 1fr 120px; gap: 0.75rem;">
+                <input type="text" id="guestbook-name" placeholder="Tên của bạn..." required style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.6rem 0.8rem; color: white; outline: none; font-size: 0.9rem;">
+                <select id="guestbook-emoji" style="background: rgba(13, 20, 38, 0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.6rem 0.8rem; color: white; outline: none; font-size: 0.9rem;">
+                  <option value="💻">💻 Coder</option>
+                  <option value="🚀">🚀 Designer</option>
+                  <option value="🔥">🔥 Hacker</option>
+                  <option value="☕">☕ Coffee</option>
+                  <option value="✨">✨ Guest</option>
+                </select>
+              </div>
+              <textarea id="guestbook-msg" placeholder="Nhập lời nhắn của bạn..." required style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.6rem 0.8rem; color: white; outline: none; font-size: 0.9rem; resize: none; height: 80px;"></textarea>
+              <button type="submit" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; transition: var(--transition); font-size: 0.9rem; align-self: flex-end;">Gửi Lời Nhắn</button>
+            </form>
+            <div id="guestbook-messages-list" style="display: flex; flex-direction: column; gap: 0.8rem; max-height: 280px; overflow-y: auto; padding-right: 0.5rem;">
+              <!-- Loaded Dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Projects -->
+        <div id="projects-tab" class="tab-panel">
+          <div class="project-filters">
+            <button class="filter-btn active" onclick="filterProjects('all')">Tất cả</button>
+            <button class="filter-btn" onclick="filterProjects('web')">Website</button>
+            <button class="filter-btn" onclick="filterProjects('bot')">Telegram Bot</button>
+          </div>
+
+          <div class="projects-grid">
+            <!-- Dynamic projects load here -->
+          </div>
+        </div>
+
+
+
+        <!-- Tab 4: Donate -->
+        <div id="payment-tab" class="tab-panel">
+          <div class="glass-card">
+            <h3 class="section-title"><i class="ri-hearts-line"></i> Ủng hộ tôi</h3>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">
+              Sự hỗ trợ của bạn là động lực to lớn giúp tôi tiếp tục sáng tạo các sản phẩm mã nguồn mở và nâng cấp chất lượng ứng dụng tốt hơn. Cảm ơn bạn rất nhiều!
+            </p>
+
+            <div class="payment-grid" id="portfolio-payment-grid">
+              <!-- Vietcombank Card -->
+              <div class="bank-card">
+                <div class="bank-header">
+                  <span class="bank-name">Vietcombank</span>
+                  <i class="ri-bank-fill bank-logo"></i>
+                </div>
+                <div class="bank-number">
+                  <span id="card-num">1064827480</span>
+                  <button class="copy-btn" onclick="copyCardNumText(this, '1064827480')" title="Sao chép số tài khoản">
+                    <i class="ri-file-copy-line"></i>
+                  </button>
+                </div>
+                <div class="bank-holder">VAN TIEN KHANH</div>
+              </div>
+
+              <!-- QR Card (Trigger) -->
+              <div class="qr-card" onclick="toggleModal(true)">
+                <i class="ri-qr-code-line qr-icon"></i>
+                <div class="qr-title">Quét Mã QR</div>
+                <div class="qr-desc">Chuyển khoản nhanh qua VietQR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 6: Terminal -->
+        <div id="terminal-tab" class="tab-panel">
+          <div class="glass-card terminal-card" style="font-family: Consolas, 'Courier New', monospace; color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 16px;">
+            <!-- Terminal Header -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.3); border-top-left-radius: 16px; border-top-right-radius: 16px;">
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #eab308; display: inline-block;"></span>
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+              </div>
+              <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;">guest@vtk.dev:~</div>
+              <div style="width: 48px;"></div> <!-- Spacer -->
+            </div>
+            
+            <!-- Terminal Content Box -->
+            <div class="terminal-body" style="padding: 1.25rem; height: 350px; overflow-y: auto; font-size: 0.85rem; line-height: 1.6; display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+              <div>Chào mừng bạn đến với hệ thống terminal tương tác của <span style="color: #60a5fa; font-weight: bold;">VTK-Shell v1.0.0</span>.</div>
+              <div>Gõ <span style="color: #f59e0b; font-weight: bold;">help</span> để xem danh sách các lệnh khả dụng hỗ trợ truy vấn thông tin.</div>
+              
+              <div id="terminal-output-container" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <!-- Outputs go here -->
+              </div>
+              
+              <!-- Input Prompt -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                <span style="color: #60a5fa; font-weight: bold; white-space: nowrap;">guest@vtk.dev:~$</span>
+                <input type="text" id="terminal-input" autocomplete="off" style="flex: 1; background: transparent; border: none; outline: none; color: #ffffff; font-family: inherit; font-size: inherit; caret-color: #10b981; padding: 0;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="#" class="footer-link">Trang chủ</a>
+        <a href="#" class="footer-link">GitHub</a>
+        <a href="#" class="footer-link">Liên hệ</a>
+      </div>
+      <p>&copy; <span id="year-container">2026</span> Văn Tiến Khánh. Built with 💖 and Glassmorphism.</p>
+    </footer>
+
+  </div>
+
+  <!-- QR Code Modal -->
+  <div class="modal" id="qr-modal" onclick="closeModalOnOuterClick(event)">
+    <div class="modal-content">
+      <button class="modal-close" onclick="toggleModal(false)">&times;</button>
+      <h3 class="qr-title">Mã QR Vietcombank</h3>
+      <p class="qr-desc">Dùng ứng dụng ngân hàng quét mã để thanh toán nhanh</p>
+      <div class="qr-image-display">
+        <img src="./assets/img/vcb_qr.png" alt="Vietcombank QR Code" onerror="this.src='https://img.vietqr.io/image/vcb-1064827480-compact2.png?amount=0&addInfo=Ung%20ho%20VTK&accountName=VAN%20TIEN%20KHANH'">
+      </div>
+      <p class="qr-desc-detail" style="font-size: 0.8rem; color: var(--text-muted);">Số tài khoản: 1064827480 - VAN TIEN KHANH</p>
+    </div>
+  </div>
+
+  <!-- News Detail Modal -->
+  <div class="modal" id="news-modal" onclick="closeNewsModalOnOuterClick(event)">
+    <div class="modal-content">
+      <button class="modal-close" onclick="toggleNewsModal(false)">&times;</button>
+      <div class="modal-news-header">
+        <span class="news-modal-date" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+        <h3 class="news-modal-title" style="margin-top: 0.5rem; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text-main);"></h3>
+      </div>
+      <div class="news-modal-img-container" style="width: 100%; border-radius: 0.75rem; overflow: hidden; margin-bottom: 1.5rem; max-height: 250px;">
+        <img src="" alt="" class="news-modal-img" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div class="news-modal-content" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); max-height: 200px; overflow-y: auto; padding-right: 0.5rem;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Message -->
+  <div class="toast" id="toast-message">
+    <i class="ri-checkbox-circle-line toast-icon"></i>
+    <span class="toast-message" id="toast-text">Sao chép thành công!</span>
+  </div>
+
+  <!-- FuiToast container to avoid JS init errors -->
+  <div id="fui-toast"></div>
+
+  <!-- Background Music Element (hidden) -->
+  <audio id="bg-audio" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+  <!-- JS Scripts -->
+  <script src="./assets/js/libs/jquery-3.7.1.min.js"></script>
+  <script src="./assets/js/libs/fuiToast.min.js"></script>
+  <script src="./assets/js/libs/fancybox.umd.js"></script>
+  <script src="./assets/js/common.js?v=4.8"></script>
+
+  <script>
+    // Set Year
+    document.getElementById('year-container').textContent = new Date().getFullYear();
+
+    // Clock Display
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      const clockEl = document.getElementById('clock-display');
+      if (clockEl) {
+        clockEl.innerHTML = `<i class="ri-time-line"></i> ${timeStr}`;
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Switch Tabs
+    function switchTab(evt, tabId) {
+      // Hide all panels
+      const panels = document.querySelectorAll('.tab-panel');
+      panels.forEach(panel => panel.classList.remove('active'));
+
+      // Remove active class from all buttons
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => btn.classList.remove('active'));
+
+      // Show current panel and activate button
+      const activePanel = document.getElementById(tabId);
+      if (activePanel) activePanel.classList.add('active');
+      evt.currentTarget.classList.add('active');
+      
+      if (tabId === 'terminal-tab') {
+        const input = document.getElementById('terminal-input');
+        if (input) setTimeout(() => input.focus(), 50);
+      }
+    }
+
+    // Filter Projects
+    function filterProjects(category) {
+      const cards = document.querySelectorAll('.project-card');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+
+      // Update active state of button
+      filterBtns.forEach(btn => {
+        if (btn.getAttribute('onclick').includes(category)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Show/Hide cards
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+          card.style.opacity = '0';
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transition = 'opacity 0.4s ease';
+          }, 50);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Show Toast Notification
+    function showToast(message) {
+      const toast = document.getElementById('toast-message');
+      const toastText = document.getElementById('toast-text');
+      if (toast && toastText) {
+        toastText.textContent = message;
+        toast.classList.add('active');
+        setTimeout(() => {
+          toast.classList.remove('active');
+        }, 3000);
+      }
+    }
+
+    // Modal Control
+    function toggleModal(show) {
+      const modal = document.getElementById('qr-modal');
+      if (modal) {
+        if (show) {
+          modal.classList.add('active');
+        } else {
+          modal.classList.remove('active');
+        }
+      }
+    }
+
+    function closeModalOnOuterClick(evt) {
+      const modal = document.getElementById('qr-modal');
+      if (evt.target === modal) {
+        toggleModal(false);
+      }
+    }
+
+    // Typewriter effect using LocalStorage values
+    const typewriter = document.getElementById('typewriter');
+    const dynamicName = localStorage.getItem("profile_name") || 'Văn Tiến Khánh';
+    const words = [dynamicName, 'Web Developer', 'Freelancer', 'System Architect'];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function type() {
+      if (!typewriter) return;
+      const currentWord = words[wordIndex];
+      if (isDeleting) {
+        typewriter.textContent = currentWord.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typewriter.textContent = currentWord.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let typeSpeed = 100;
+      if (isDeleting) {
+        typeSpeed /= 2; // Delete faster
+      }
+
+      if (!isDeleting && charIndex === currentWord.length) {
+        typeSpeed = 1500; // Hold word at the end
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+        typeSpeed = 400; // Pause before typing next word
+      }
+
+      setTimeout(type, typeSpeed);
+    }
+    
+    // Start typewriter
+    setTimeout(type, 1000);
+
+    // Particle Background implementation
+    const canvas = document.getElementById('particle-canvas');
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+    // Theme global colors initial values
+    window.themeColors = {
+      primary: '#39ff14',
+      secondary: '#00e5ff',
+      accent: '#ffff00'
+    };
+
+    if (canvas) {
+      if (isMobile) {
+        canvas.style.display = 'none';
+      } else {
+        const ctx = canvas.getContext('2d');
+        
+        let particlesArray = [];
+        const numberOfParticles = 65;
+        const maxDistance = 100;
+        const mouse = {
+          x: null,
+          y: null,
+          radius: 120
+        };
+
+        window.addEventListener('mousemove', function(event) {
+          mouse.x = event.clientX;
+          mouse.y = event.clientY;
+        });
+
+        window.addEventListener('mouseout', function() {
+          mouse.x = null;
+          mouse.y = null;
+        });
+
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+          constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2 + 1;
+            this.speedX = Math.random() * 0.6 - 0.3;
+            this.speedY = Math.random() * 0.6 - 0.3;
+            this.isPrimaryType = Math.random() > 0.5;
+            this.color = '#8b5cf6';
+          }
+          update() {
+            const primaryColor = window.themeColors ? window.themeColors.primary : '#8b5cf6';
+            const secondaryColor = window.themeColors ? window.themeColors.secondary : '#06b6d4';
+            const accentColor = window.themeColors ? window.themeColors.accent : '#ec4899';
+
+            if (mouse.x != null && mouse.y != null) {
+              let dx = mouse.x - this.x;
+              let dy = mouse.y - this.y;
+              let distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < mouse.radius) {
+                let force = (mouse.radius - distance) / mouse.radius;
+                let directionX = dx / distance;
+                let directionY = dy / distance;
+                this.x -= directionX * force * 1.5;
+                this.y -= directionY * force * 1.5;
+                this.color = accentColor + '70';
+              } else {
+                this.color = this.isPrimaryType ? primaryColor + '40' : secondaryColor + '40';
+              }
+            } else {
+              this.color = this.isPrimaryType ? primaryColor + '40' : secondaryColor + '40';
+            }
+
+            this.x += this.speedX;
+            this.y += this.speedY;
+
+            if (this.x > canvas.width) this.x = 0;
+            else if (this.x < 0) this.x = canvas.width;
+
+            if (this.y > canvas.height) this.y = 0;
+            else if (this.y < 0) this.y = canvas.height;
+          }
+          draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        function initParticles() {
+          particlesArray = [];
+          for (let i = 0; i < numberOfParticles; i++) {
+            particlesArray.push(new Particle());
+          }
+        }
+        initParticles();
+
+        function drawLines() {
+          for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a + 1; b < particlesArray.length; b++) {
+              let dx = particlesArray[a].x - particlesArray[b].x;
+              let dy = particlesArray[a].y - particlesArray[b].y;
+              let distance = Math.sqrt(dx * dx + dy * dy);
+
+              if (distance < maxDistance) {
+                let opacity = (1 - (distance / maxDistance)) * 0.15;
+                const primaryColor = window.themeColors ? window.themeColors.primary : '#8b5cf6';
+                ctx.strokeStyle = primaryColor;
+                ctx.globalAlpha = opacity;
+                ctx.lineWidth = 0.8;
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+              }
+            }
+
+            if (mouse.x != null && mouse.y != null) {
+              let dx = particlesArray[a].x - mouse.x;
+              let dy = particlesArray[a].y - mouse.y;
+              let distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < mouse.radius) {
+                let opacity = (1 - (distance / mouse.radius)) * 0.2;
+                const accentColor = window.themeColors ? window.themeColors.accent : '#ec4899';
+                ctx.strokeStyle = accentColor;
+                ctx.globalAlpha = opacity;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+              }
+            }
+          }
+        }
+
+        function animateParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+            particlesArray[i].draw();
+          }
+          drawLines();
+          requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+      }
+    }
+
+      // Vibe Selector theme definition
+      const vibeThemes = {
+        cyber: {
+          '--primary': '#8b5cf6',
+          '--primary-glow': 'rgba(139, 92, 246, 0.2)',
+          '--secondary': '#06b6d4',
+          '--secondary-glow': 'rgba(6, 182, 212, 0.2)',
+          '--accent': '#ec4899',
+          '--accent-glow': 'rgba(236, 72, 153, 0.2)',
+          '--bg-dark': '#05070f',
+          '--border-hover': 'rgba(139, 92, 246, 0.4)'
+        },
+        sunset: {
+          '--primary': '#ff007f',
+          '--primary-glow': 'rgba(255, 0, 127, 0.2)',
+          '--secondary': '#ff7c00',
+          '--secondary-glow': 'rgba(255, 124, 0, 0.2)',
+          '--accent': '#ff00ff',
+          '--accent-glow': 'rgba(255, 0, 255, 0.2)',
+          '--bg-dark': '#0f050b',
+          '--border-hover': 'rgba(255, 0, 127, 0.4)'
+        },
+        matrix: {
+          '--primary': '#39ff14',
+          '--primary-glow': 'rgba(57, 255, 20, 0.2)',
+          '--secondary': '#00e5ff',
+          '--secondary-glow': 'rgba(0, 229, 255, 0.2)',
+          '--accent': '#ffff00',
+          '--accent-glow': 'rgba(255, 255, 0, 0.2)',
+          '--bg-dark': '#030a05',
+          '--border-hover': 'rgba(57, 255, 20, 0.4)'
+        },
+        hyper: {
+          '--primary': '#2979ff',
+          '--primary-glow': 'rgba(41, 121, 255, 0.2)',
+          '--secondary': '#00e5ff',
+          '--secondary-glow': 'rgba(0, 229, 255, 0.2)',
+          '--accent': '#7c4dff',
+          '--accent-glow': 'rgba(124, 77, 255, 0.2)',
+          '--bg-dark': '#050a1b',
+          '--border-hover': 'rgba(41, 121, 255, 0.4)'
+        }
+      };
+
+      function setTheme(themeName) {
+        const theme = vibeThemes[themeName];
+        if (!theme) return;
+        
+        const root = document.documentElement;
+        Object.keys(theme).forEach(key => {
+          root.style.setProperty(key, theme[key]);
+        });
+        
+        // Update global colors for canvas particles
+        window.themeColors = {
+          primary: theme['--primary'],
+          secondary: theme['--secondary'],
+          accent: theme['--accent']
+        };
+        
+        // Update logo glow color to match secondary
+        const logoGlow = document.querySelector('.logo-glow');
+        if (logoGlow) {
+          logoGlow.style.background = theme['--secondary'];
+          logoGlow.style.boxShadow = `0 0 10px ${theme['--secondary']}`;
+        }
+
+        localStorage.setItem('vibe_theme', themeName);
+        
+        // Update active class on buttons
+        document.querySelectorAll('.vibe-btn').forEach(btn => {
+          if (btn.getAttribute('data-vibe') === themeName) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+
+      // Bind theme selector events
+      document.querySelectorAll('.vibe-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const themeName = btn.getAttribute('data-vibe');
+          setTheme(themeName);
+          if (typeof fuiToast !== 'undefined') {
+            fuiToast.success(`Đã chuyển đổi vibe sang: ${btn.getAttribute('title')}! ✨`);
+          }
+        });
+      });
+
+      // Load saved theme
+      const savedTheme = localStorage.getItem('vibe_theme') || 'matrix';
+      setTheme(savedTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1133 @@
+<html lang="vi-VN" class="dark" data-title-loader="Văn Tiến Khánh - Admin">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Văn Tiến Khánh - Admin Panel</title>
+        <link rel="shortcut icon" href="./assets/img/avatar.jpg" type="image/jpeg">
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./assets/css/style.css?v=3.10">
+        <link rel="stylesheet" href="./assets/css/fuiToast.min.css">
+        <link rel="stylesheet" href="./assets/css/index.css?v=3.1">
+        <style>
+            .admin-tab-btn.active {
+                border-color: hsl(var(--primary));
+                color: hsl(var(--foreground));
+                background: hsl(var(--primary-foreground));
+            }
+            .form-input {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                background: hsl(var(--primary-foreground));
+                border: 1px solid hsl(var(--border));
+                border-radius: 0.75rem;
+                color: hsl(var(--foreground));
+                outline: none;
+                transition: border-color 0.2s ease;
+            }
+            .form-input:focus {
+                border-color: hsl(var(--primary));
+            }
+            .form-label {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                display: block;
+                font-size: 0.875rem;
+            }
+            .btn-action {
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+            .btn-primary-custom {
+                background: hsl(var(--primary));
+                color: hsl(var(--primary-foreground));
+            }
+            .btn-primary-custom:hover {
+                opacity: 0.9;
+            }
+            .btn-danger {
+                background: hsl(var(--destructive));
+                color: hsl(var(--destructive-foreground));
+            }
+            .btn-danger:hover {
+                opacity: 0.9;
+            }
+            .preview-img {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 2px solid hsl(var(--border));
+            }
+            /* Login overlay style */
+            #admin-login-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(10, 10, 12, 0.85);
+                backdrop-filter: blur(16px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .login-card {
+                background: hsl(var(--primary-foreground));
+                border: 1px solid hsl(var(--border));
+                border-radius: 1.5rem;
+                padding: 2.5rem;
+                width: 90%;
+                max-width: 26rem;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="fui-toast"></div>
+
+        <!-- Password Protection Overlay -->
+        <div id="admin-login-overlay">
+            <div class="login-card flex flex-col gap-y-4">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-primary flex justify-center items-center gap-x-2">
+                        <i class="ri-lock-password-line"></i> Xác thực Admin
+                    </h2>
+                    <p class="text-sm text-muted-foreground mt-2">Vui lòng nhập mật khẩu để vào bảng điều khiển.</p>
+                </div>
+                <div class="mt-4">
+                    <label class="form-label" for="admin-password">Mật khẩu</label>
+                    <input type="password" id="admin-password" class="form-input text-center" placeholder="••••••" autofocus onkeydown="if(event.key==='Enter') verifyPassword()">
+                </div>
+                <button class="btn-action btn-primary-custom w-full mt-2 py-3" onclick="verifyPassword()">Đăng nhập</button>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Container -->
+        <div class="flex justify-center bg-background hidden" id="admin-dashboard-container">
+            <div class="pointer-events-none absolute start-0 top-0 z-0 h-1/2 w-full opacity-40" style="background-image:linear-gradient(#659EB966, transparent)"></div>
+            <main class="z-10 flex min-h-screen w-screen max-w-[60rem] flex-col items-center px-4 text-[0.92rem] leading-relaxed sm:px-7 lg:px-10">
+                <header class="group sticky top-4 z-30 mb-12 box-content w-full rounded-xl border border-transparent py-1 transition-all duration-300 sm:rounded-2xl [&.not-top]:border-border [&.not-top]:bg-background dark:[&.not-top]:bg-primary-foreground">
+                    <header class="flex flex-wrap text-sm sm:flex-nowrap sm:justify-start">
+                        <nav class="relative mx-auto flex w-full items-center justify-between sm:flex sm:items-center">
+                            <h1 class="flex-none text-xl font-semibold transition-all duration-300 group-[.not-top]:ms-3 sm:group-[.not-top]:ms-5">
+                                <span class="magic">
+                                    <span class="magic-star">
+                                        <svg viewBox="0 0 512 512">
+                                            <path d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="magic-text">Văn Tiến Khánh Dashboard</span>
+                                </span>
+                            </h1>
+                            <div class="flex gap-x-4 sm:gap-x-6 items-center">
+                                <div class="flex gap-x-3 sm:gap-x-4 text-xs sm:text-sm">
+                                    <a href="index.html" class="hover:text-primary font-medium transition-colors text-muted-foreground hover:text-foreground">Trang Chủ</a>
+                                </div>
+                            </div>
+                        </nav>
+                    </header>
+                </header>
+
+                <div class="flex w-full flex-col gap-y-8 md:w-4/5 lg:w-5/6">
+                    <div class="flex flex-col gap-y-2">
+                        <h2 class="text-3xl font-bold">Admin Dashboard</h2>
+                        <p class="text-muted-foreground">Quản trị nội dung hiển thị trên trang cá nhân, tin tức và sản phẩm.</p>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="flex border-b border-border gap-x-2 overflow-x-auto">
+                        <button class="admin-tab-btn active px-4 py-2 border-b-2 border-transparent text-sm font-semibold rounded-t-xl transition-all whitespace-nowrap" onclick="switchTab('profile')">Cấu hình Profile</button>
+                        <button class="admin-tab-btn px-4 py-2 border-b-2 border-transparent text-sm font-semibold rounded-t-xl transition-all whitespace-nowrap" onclick="switchTab('payment')">Quản lý Thanh Toán</button>
+                        <button class="admin-tab-btn px-4 py-2 border-b-2 border-transparent text-sm font-semibold rounded-t-xl transition-all whitespace-nowrap" onclick="switchTab('music')">Quản lý Nhạc</button>
+                        <button class="admin-tab-btn px-4 py-2 border-b-2 border-transparent text-sm font-semibold rounded-t-xl transition-all whitespace-nowrap" onclick="switchTab('news')">Quản lý Tin Tức</button>
+                        <button class="admin-tab-btn px-4 py-2 border-b-2 border-transparent text-sm font-semibold rounded-t-xl transition-all whitespace-nowrap" onclick="switchTab('products')">Quản lý Sản Phẩm</button>
+                        <button class="admin-tab-btn px-4 py-2 border-b-2 border-transparent text-sm font-semibold rounded-t-xl transition-all whitespace-nowrap" onclick="switchTab('guestbook')">Quản lý Lời Nhắn</button>
+                    </div>
+
+                    <!-- PROFILE TAB -->
+                    <div id="tab-profile" class="admin-tab-content flex flex-col gap-y-6">
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6 flex flex-col gap-y-4">
+                            <h3 class="text-lg font-semibold border-b border-border pb-2">Thông tin cá nhân</h3>
+                            
+                            <div class="flex items-center gap-x-4">
+                                <img id="profile-avatar-preview" src="" alt="Avatar" class="preview-img">
+                                <div>
+                                    <label class="form-label">Tải lên Avatar mới</label>
+                                    <input type="file" id="profile-avatar-file" accept="image/*" class="text-xs text-muted-foreground" onchange="previewAvatarFile(event)">
+                                    <div class="text-xs text-muted-foreground mt-1">Hoặc nhập link trực tiếp bên dưới</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="form-label" for="profile-name-input">Tên hiển thị (Tự động cập nhật toàn bộ hệ thống)</label>
+                                    <input type="text" id="profile-name-input" class="form-input" placeholder="Tên hiển thị">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="profile-avatar-url">Đường dẫn ảnh Avatar (URL)</label>
+                                    <input type="text" id="profile-avatar-url" class="form-input" placeholder="Link ảnh avatar" onchange="previewAvatarUrl(this.value)">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="profile-bio-input">Mô tả (Bio - hỗ trợ HTML)</label>
+                                    <textarea id="profile-bio-input" class="form-input h-32" placeholder="Nhập tiểu sử..."></textarea>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg font-semibold border-b border-border pb-2 mt-4">Cấu hình chân trang (Footer)</h3>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="profile-footer-text-input">Chữ hiển thị ở Footer</label>
+                                    <input type="text" id="profile-footer-text-input" class="form-input" placeholder="Ví dụ: Văn Tiến Khánh.Com">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="profile-footer-url-input">Đường dẫn liên kết Footer</label>
+                                    <input type="text" id="profile-footer-url-input" class="form-input" placeholder="Ví dụ: https://văn tiến khánh.com">
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg font-semibold border-b border-border pb-2 mt-4">Cấu hình liên hệ hỗ trợ mua hàng (Support)</h3>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="profile-support-text-input">Chữ hiển thị nút Hỗ trợ</label>
+                                    <input type="text" id="profile-support-text-input" class="form-input" placeholder="Ví dụ: Liên hệ Github hỗ trợ">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="profile-support-url-input">Đường dẫn liên kết Hỗ trợ (URL)</label>
+                                    <input type="text" id="profile-support-url-input" class="form-input" placeholder="Ví dụ: https://github.com/vantienkhanh">
+                                </div>
+                            </div>
+
+                            <button class="btn-action btn-primary-custom w-fit self-end mt-2" onclick="saveProfile()">Lưu thay đổi</button>
+                        </div>
+
+                        <!-- Manage Social Links -->
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6 flex flex-col gap-y-4">
+                            <h3 class="text-lg font-semibold border-b border-border pb-2">Liên kết mạng xã hội (Social Links)</h3>
+                            
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
+                                <div>
+                                    <label class="form-label" for="social-template-select">Chọn mẫu nhanh</label>
+                                    <select id="social-template-select" class="form-input" onchange="applySocialTemplate(this.value)">
+                                        <option value="">-- Tự nhập --</option>
+                                        <option value="facebook">Facebook</option>
+                                        <option value="tiktok">TikTok</option>
+                                        <option value="telegram">Telegram</option>
+                                        <option value="youtube">YouTube</option>
+                                        <option value="instagram">Instagram</option>
+                                        <option value="github">GitHub</option>
+                                        <option value="discord">Discord</option>
+                                        <option value="messenger">Messenger</option>
+                                        <option value="website">Website cá nhân</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label" for="social-name-input">Tên MXH</label>
+                                    <input type="text" id="social-name-input" class="form-input" placeholder="Ví dụ: Facebook, Github">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="social-icon-input">Class Icon Remixicon</label>
+                                    <input type="text" id="social-icon-input" class="form-input" placeholder="Ví dụ: ri-facebook-fill, ri-github-fill">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="social-url-input">Đường dẫn liên kết URL</label>
+                                    <input type="text" id="social-url-input" class="form-input" placeholder="Ví dụ: https://facebook.com/...">
+                                </div>
+                            </div>
+
+                            <button class="btn-action btn-primary-custom w-fit self-end" onclick="addSocialLink()">Thêm liên kết</button>
+
+                            <div class="overflow-x-auto mt-4">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="py-2">Tên</th>
+                                            <th class="py-2">Icon</th>
+                                            <th class="py-2">Đường dẫn</th>
+                                            <th class="py-2 text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="socials-table-body">
+                                        <!-- Social links loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT TAB -->
+                    <div id="tab-payment" class="admin-tab-content hidden flex flex-col gap-y-6">
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6 flex flex-col gap-y-4">
+                            <h3 class="text-lg font-semibold border-b border-border pb-2">Cấu hình Tài khoản Thanh toán (Payment)</h3>
+                            
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="pay-bank-name">Tên Ngân hàng / Ví điện tử</label>
+                                    <input type="text" id="pay-bank-name" class="form-input" placeholder="Ví dụ: ACB, Vietinbank, Momo">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="pay-account-number">Số tài khoản / Số điện thoại</label>
+                                    <input type="text" id="pay-account-number" class="form-input" placeholder="Số tài khoản">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="pay-account-name">Tên chủ tài khoản</label>
+                                    <input type="text" id="pay-account-name" class="form-input" placeholder="Tên viết hoa không dấu">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="pay-logo-url">Link ảnh Logo ngân hàng (Tùy chọn)</label>
+                                    <input type="text" id="pay-logo-url" class="form-input" placeholder="Ví dụ: ./assets/img/icon/acb.png">
+                                </div>
+                            </div>
+
+                            <button class="btn-action btn-primary-custom w-fit self-end mt-2" onclick="addPaymentAccount()">Thêm tài khoản</button>
+                        </div>
+
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6">
+                            <h3 class="text-lg font-semibold border-b border-border pb-4 mb-4">Danh sách tài khoản ngân hàng</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="py-2">Logo</th>
+                                            <th class="py-2">Ngân hàng</th>
+                                            <th class="py-2">Số tài khoản</th>
+                                            <th class="py-2">Chủ tài khoản</th>
+                                            <th class="py-2 text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="payment-table-body">
+                                        <!-- Payments loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MUSIC TAB -->
+                    <div id="tab-music" class="admin-tab-content hidden flex flex-col gap-y-6">
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6 flex flex-col gap-y-4">
+                            <h3 class="text-lg font-semibold border-b border-border pb-2">Cấu hình nhạc nền nền web (Music)</h3>
+                            
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="music-title">Tên bài hát</label>
+                                    <input type="text" id="music-title" class="form-input" placeholder="Tên bài hát hiển thị">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="music-url">Đường dẫn file nhạc (URL dạng .mp3)</label>
+                                    <input type="text" id="music-url" class="form-input" placeholder="https://domain.com/nhac.mp3">
+                                </div>
+                            </div>
+
+                            <button class="btn-action btn-primary-custom w-fit self-end mt-2" onclick="addMusicTrack()">Thêm bài hát</button>
+                            <p class="text-xs text-muted-foreground mt-1">Lưu ý: Nếu danh sách nhạc tự chọn trống, web sẽ tự động sử dụng nhạc từ API mặc định.</p>
+                        </div>
+
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6">
+                            <h3 class="text-lg font-semibold border-b border-border pb-4 mb-4">Danh sách nhạc tự chọn</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="py-2">Tên bài hát</th>
+                                            <th class="py-2">Đường dẫn liên kết</th>
+                                            <th class="py-2 text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="music-table-body">
+                                        <!-- Music tracks loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEWS TAB -->
+                    <div id="tab-news" class="admin-tab-content hidden flex flex-col gap-y-6">
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6 flex flex-col gap-y-4">
+                            <h3 class="text-lg font-semibold border-b border-border pb-2" id="news-form-title">Đăng bài viết mới</h3>
+                            
+                            <input type="hidden" id="news-id">
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="news-title">Tiêu đề bài viết</label>
+                                    <input type="text" id="news-title" class="form-input" placeholder="Nhập tiêu đề">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="news-image">Link hình ảnh bài viết (hoặc upload ảnh bên dưới)</label>
+                                    <input type="text" id="news-image" class="form-input" placeholder="URL ảnh">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label">Tải lên file ảnh bài viết</label>
+                                    <input type="file" id="news-image-file" accept="image/*" class="text-xs" onchange="uploadNewsImg(event)">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="news-date">Ngày đăng</label>
+                                    <input type="date" id="news-date" class="form-input">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" for="news-summary">Tóm tắt ngắn</label>
+                                <input type="text" id="news-summary" class="form-input" placeholder="Nhập mô tả tóm tắt">
+                            </div>
+                            <div>
+                                <label class="form-label" for="news-content">Nội dung chi tiết bài viết</label>
+                                <textarea id="news-content" class="form-input h-40" placeholder="Nội dung bài viết..."></textarea>
+                            </div>
+                            
+                            <div class="flex gap-x-2 w-fit self-end mt-2">
+                                <button class="btn-action btn-primary-custom" onclick="saveNews()">Đăng bài viết</button>
+                                <button class="btn-action bg-secondary text-foreground hidden" id="btn-cancel-news" onclick="resetNewsForm()">Hủy sửa</button>
+                            </div>
+                        </div>
+
+                        <!-- News List -->
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6">
+                            <h3 class="text-lg font-semibold border-b border-border pb-4 mb-4">Danh sách bài viết đã đăng</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="py-2">Ảnh</th>
+                                            <th class="py-2">Tiêu đề</th>
+                                            <th class="py-2">Tóm tắt</th>
+                                            <th class="py-2">Ngày đăng</th>
+                                            <th class="py-2 text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="news-table-body">
+                                        <!-- News list loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCTS TAB -->
+                    <div id="tab-products" class="admin-tab-content hidden flex flex-col gap-y-6">
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6 flex flex-col gap-y-4">
+                            <h3 class="text-lg font-semibold border-b border-border pb-2" id="prod-form-title">Đăng sản phẩm mới</h3>
+                            
+                            <input type="hidden" id="prod-id">
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="prod-name">Tên sản phẩm</label>
+                                    <input type="text" id="prod-name" class="form-input" placeholder="Tên sản phẩm">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="prod-price">Giá cả (VND)</label>
+                                    <input type="number" id="prod-price" class="form-input" placeholder="Ví dụ: 150000">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="form-label" for="prod-image">Đường dẫn ảnh sản phẩm (URL)</label>
+                                    <input type="text" id="prod-image" class="form-input" placeholder="URL hình ảnh">
+                                </div>
+                                <div>
+                                    <label class="form-label">Tải lên file ảnh sản phẩm</label>
+                                    <input type="file" id="prod-image-file" accept="image/*" class="text-xs" onchange="uploadProdImg(event)">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" for="prod-desc">Mô tả sản phẩm</label>
+                                <textarea id="prod-desc" class="form-input h-28" placeholder="Thông tin chi tiết về sản phẩm..."></textarea>
+                            </div>
+
+                            <div class="flex gap-x-2 w-fit self-end mt-2">
+                                <button class="btn-action btn-primary-custom" onclick="saveProduct()">Đăng sản phẩm</button>
+                                <button class="btn-action bg-secondary text-foreground hidden" id="btn-cancel-prod" onclick="resetProdForm()">Hủy sửa</button>
+                            </div>
+                        </div>
+
+                        <!-- Product List -->
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6">
+                            <h3 class="text-lg font-semibold border-b border-border pb-4 mb-4">Danh sách sản phẩm</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="py-2">Ảnh</th>
+                                            <th class="py-2">Tên</th>
+                                            <th class="py-2">Giá cả</th>
+                                            <th class="py-2">Mô tả</th>
+                                            <th class="py-2 text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="products-table-body">
+                                        <!-- Products loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GUESTBOOK TAB -->
+                    <div id="tab-guestbook" class="admin-tab-content hidden flex flex-col gap-y-6">
+                        <div class="bg-primary-foreground border border-border rounded-2xl p-6">
+                            <h3 class="text-lg font-semibold border-b border-border pb-4 mb-4">Quản lý Lời nhắn & Lưu bút</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-border">
+                                            <th class="py-2">Tên</th>
+                                            <th class="py-2">Emoji</th>
+                                            <th class="py-2">Nội dung</th>
+                                            <th class="py-2">Thời gian</th>
+                                            <th class="py-2 text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="guestbook-table-body">
+                                        <!-- Guestbook messages loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="mx-auto mt-24 w-full text-center">
+                    <div class="border-t border-border p-2">
+                        <p>© <samp id="year"></samp> <a href="/" id="footer-website-link">Văn Tiến Khánh.Com</a>. All Rights Reserved.</p>
+                    </div>
+                </footer>
+            </main>
+        </div>
+
+        <script src="./assets/js/libs/jquery-3.7.1.min.js"></script>
+        <script src="./assets/js/libs/fuiToast.min.js"></script>
+        <script src="./assets/js/common.js?v=4.6"></script>
+        <script>
+            // Password verification
+            function verifyPassword() {
+                const pass = document.getElementById("admin-password").value;
+                if (pass === "123456") {
+                    sessionStorage.setItem("admin_logged", "true");
+                    document.getElementById("admin-login-overlay").remove();
+                    document.getElementById("admin-dashboard-container").classList.remove("hidden");
+                    FuiToast.success("Đăng nhập Admin thành công!");
+                } else {
+                    FuiToast.error("Mật khẩu không chính xác!");
+                }
+            }
+
+            // Check session on load
+            if (sessionStorage.getItem("admin_logged") === "true") {
+                document.getElementById("admin-login-overlay").remove();
+                document.getElementById("admin-dashboard-container").classList.remove("hidden");
+            }
+
+            // Toggle theme matching other pages
+            function initTheme() {
+                const cookieTheme = document.cookie.split("; ").reduce((n, t) => {
+                    let [e, i] = t.split("=");
+                    return n[e] = i, n;
+                }, {})["theme"] || "dark";
+                
+                if (cookieTheme === "light") {
+                    $("html").removeClass("dark").addClass("light");
+                } else {
+                    $("html").removeClass("light").addClass("dark");
+                }
+            }
+            initTheme();
+
+            $("body").on("click", ".change-theme", function() {
+                let isDark = $("html").hasClass("dark");
+                if (isDark) {
+                    $("html").removeClass("dark").addClass("light");
+                    document.cookie = "theme=light; path=/";
+                } else {
+                    $("html").removeClass("light").addClass("dark");
+                    document.cookie = "theme=dark; path=/";
+                }
+            });
+
+            // Tabs Switch
+            function switchTab(tab) {
+                document.querySelectorAll(".admin-tab-btn").forEach((btn, index) => {
+                    btn.classList.remove("active");
+                });
+                document.querySelectorAll(".admin-tab-content").forEach(content => {
+                    content.classList.add("hidden");
+                });
+
+                event.target.classList.add("active");
+                document.getElementById(`tab-${tab}`).classList.remove("hidden");
+            }
+
+             // === PROFILE TAB LOGIC ===
+            function loadProfileFields() {
+                const name = localStorage.getItem("profile_name");
+                const avatar = localStorage.getItem("profile_avatar");
+                const bio = localStorage.getItem("profile_bio");
+                const footerText = localStorage.getItem("profile_footer_text");
+                const footerUrl = localStorage.getItem("profile_footer_url");
+                const supportText = localStorage.getItem("support_link_text") || "Liên hệ Github hỗ trợ";
+                const supportUrl = localStorage.getItem("support_link_url") || "#";
+
+                document.getElementById("profile-name-input").value = name;
+                document.getElementById("profile-avatar-url").value = avatar;
+                document.getElementById("profile-bio-input").value = bio;
+                document.getElementById("profile-avatar-preview").src = avatar;
+                document.getElementById("profile-footer-text-input").value = footerText;
+                document.getElementById("profile-footer-url-input").value = footerUrl;
+                document.getElementById("profile-support-text-input").value = supportText;
+                document.getElementById("profile-support-url-input").value = supportUrl;
+            }
+
+            function previewAvatarUrl(url) {
+                document.getElementById("profile-avatar-preview").src = url;
+            }
+
+            function previewAvatarFile(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById("profile-avatar-preview").src = e.target.result;
+                        document.getElementById("profile-avatar-url").value = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function saveProfile() {
+                const name = document.getElementById("profile-name-input").value;
+                const avatar = document.getElementById("profile-avatar-url").value;
+                const bio = document.getElementById("profile-bio-input").value;
+                const footerText = document.getElementById("profile-footer-text-input").value;
+                const footerUrl = document.getElementById("profile-footer-url-input").value;
+                const supportText = document.getElementById("profile-support-text-input").value;
+                const supportUrl = document.getElementById("profile-support-url-input").value;
+
+                localStorage.setItem("profile_name", name);
+                localStorage.setItem("profile_avatar", avatar);
+                localStorage.setItem("profile_bio", bio);
+                localStorage.setItem("profile_footer_text", footerText);
+                localStorage.setItem("profile_footer_url", footerUrl);
+                localStorage.setItem("support_link_text", supportText);
+                localStorage.setItem("support_link_url", supportUrl);
+
+                updateProfileDOM();
+                FuiToast.success("Đã lưu cấu hình Profile!");
+            }
+
+             // === SOCIALS LOGIC ===
+            function applySocialTemplate(val) {
+                const templates = {
+                    facebook: { name: "Facebook", icon: "ri-facebook-fill" },
+                    tiktok: { name: "TikTok", icon: "ri-tiktok-fill" },
+                    telegram: { name: "Telegram", icon: "ri-telegram-fill" },
+                    youtube: { name: "YouTube", icon: "ri-youtube-fill" },
+                    instagram: { name: "Instagram", icon: "ri-instagram-fill" },
+                    github: { name: "GitHub", icon: "ri-github-fill" },
+                    discord: { name: "Discord", icon: "ri-discord-fill" },
+                    messenger: { name: "Messenger", icon: "ri-messenger-fill" },
+                    website: { name: "Website", icon: "ri-global-line" }
+                };
+
+                if (val && templates[val]) {
+                    document.getElementById("social-name-input").value = templates[val].name;
+                    document.getElementById("social-icon-input").value = templates[val].icon;
+                } else {
+                    document.getElementById("social-name-input").value = "";
+                    document.getElementById("social-icon-input").value = "";
+                }
+            }
+
+            function loadSocialsTable() {
+                const socials = JSON.parse(localStorage.getItem("profile_socials")) || [];
+                const tbody = document.getElementById("socials-table-body");
+                tbody.innerHTML = "";
+
+                if (socials.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-muted-foreground">Chưa có liên kết MXH nào.</td></tr>`;
+                    return;
+                }
+
+                socials.forEach(soc => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-b border-border py-2";
+                    tr.innerHTML = `
+                        <td class="py-2 font-semibold">${soc.name}</td>
+                        <td class="py-2"><i class="${soc.icon} text-lg"></i> <code class="text-xs ml-1">${soc.icon}</code></td>
+                        <td class="py-2 text-muted-foreground max-w-[200px] truncate">${soc.url}</td>
+                        <td class="py-2 text-right">
+                            <button class="text-red-500" onclick="deleteSocialLink('${soc.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function addSocialLink() {
+                const name = document.getElementById("social-name-input").value;
+                const icon = document.getElementById("social-icon-input").value;
+                const url = document.getElementById("social-url-input").value;
+
+                if (!name || !icon || !url) {
+                    FuiToast.error("Vui lòng nhập đầy đủ thông tin liên kết!");
+                    return;
+                }
+
+                const socials = JSON.parse(localStorage.getItem("profile_socials")) || [];
+                const id = "soc-" + Date.now();
+                socials.push({ id, name, icon, url });
+
+                localStorage.setItem("profile_socials", JSON.stringify(socials));
+                
+                document.getElementById("social-name-input").value = "";
+                document.getElementById("social-icon-input").value = "";
+                document.getElementById("social-url-input").value = "";
+                document.getElementById("social-template-select").value = "";
+
+                loadSocialsTable();
+                updateProfileDOM();
+                FuiToast.success("Đã thêm liên kết MXH!");
+            }
+
+            function deleteSocialLink(id) {
+                if (confirm("Bạn có chắc muốn xóa liên kết này không?")) {
+                    let socials = JSON.parse(localStorage.getItem("profile_socials")) || [];
+                    socials = socials.filter(s => s.id !== id);
+                    localStorage.setItem("profile_socials", JSON.stringify(socials));
+                    
+                    loadSocialsTable();
+                    updateProfileDOM();
+                    FuiToast.success("Đã xóa liên kết MXH!");
+                }
+            }
+
+            // === PAYMENT ACCOUNT LOGIC ===
+            function loadPaymentTable() {
+                const payments = JSON.parse(localStorage.getItem("payment_accounts")) || [];
+                const tbody = document.getElementById("payment-table-body");
+                tbody.innerHTML = "";
+
+                if (payments.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-muted-foreground">Chưa có tài khoản ngân hàng nào.</td></tr>`;
+                    return;
+                }
+
+                payments.forEach(pay => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-b border-border py-2";
+                    tr.innerHTML = `
+                        <td class="py-2"><img src="${pay.logoUrl || './assets/img/icon/acb.png'}" class="w-8 h-8 object-cover rounded-md bg-muted p-1"></td>
+                        <td class="py-2 font-semibold">${pay.bankName}</td>
+                        <td class="py-2 font-mono">${pay.accountNumber}</td>
+                        <td class="py-2">${pay.accountName}</td>
+                        <td class="py-2 text-right">
+                            <button class="text-red-500" onclick="deletePaymentAccount('${pay.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function addPaymentAccount() {
+                const bankName = document.getElementById("pay-bank-name").value;
+                const accountNumber = document.getElementById("pay-account-number").value;
+                const accountName = document.getElementById("pay-account-name").value;
+                const logoUrl = document.getElementById("pay-logo-url").value;
+
+                if (!bankName || !accountNumber || !accountName) {
+                    FuiToast.error("Vui lòng nhập đủ thông tin ngân hàng!");
+                    return;
+                }
+
+                const payments = JSON.parse(localStorage.getItem("payment_accounts")) || [];
+                const id = "pay-" + Date.now();
+                payments.push({ id, bankName, accountNumber, accountName, logoUrl });
+
+                localStorage.setItem("payment_accounts", JSON.stringify(payments));
+
+                document.getElementById("pay-bank-name").value = "";
+                document.getElementById("pay-account-number").value = "";
+                document.getElementById("pay-account-name").value = "";
+                document.getElementById("pay-logo-url").value = "";
+
+                loadPaymentTable();
+                updateProfileDOM();
+                FuiToast.success("Đã thêm tài khoản ngân hàng!");
+            }
+
+            function deletePaymentAccount(id) {
+                if (confirm("Bạn có chắc muốn xóa tài khoản này không?")) {
+                    let payments = JSON.parse(localStorage.getItem("payment_accounts")) || [];
+                    payments = payments.filter(p => p.id !== id);
+                    localStorage.setItem("payment_accounts", JSON.stringify(payments));
+
+                    loadPaymentTable();
+                    updateProfileDOM();
+                    FuiToast.success("Đã xóa tài khoản ngân hàng!");
+                }
+            }
+
+            // === MUSIC MANAGER LOGIC ===
+            function loadMusicTable() {
+                const tracks = JSON.parse(localStorage.getItem("custom_music_tracks")) || [];
+                const tbody = document.getElementById("music-table-body");
+                tbody.innerHTML = "";
+
+                if (tracks.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-muted-foreground">Chưa thêm bài hát tự chọn nào.</td></tr>`;
+                    return;
+                }
+
+                tracks.forEach(track => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-b border-border py-2";
+                    tr.innerHTML = `
+                        <td class="py-2 font-semibold">${track.title}</td>
+                        <td class="py-2 text-muted-foreground max-w-[300px] truncate">${track.url}</td>
+                        <td class="py-2 text-right">
+                            <button class="text-red-500" onclick="deleteMusicTrack('${track.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function addMusicTrack() {
+                const title = document.getElementById("music-title").value;
+                const url = document.getElementById("music-url").value;
+
+                if (!title || !url) {
+                    FuiToast.error("Vui lòng nhập tên bài hát và liên kết nhạc!");
+                    return;
+                }
+
+                const tracks = JSON.parse(localStorage.getItem("custom_music_tracks")) || [];
+                const id = "track-" + Date.now();
+                tracks.push({ id, title, url });
+
+                localStorage.setItem("custom_music_tracks", JSON.stringify(tracks));
+
+                document.getElementById("music-title").value = "";
+                document.getElementById("music-url").value = "";
+
+                loadMusicTable();
+                checkAndHookMusic();
+                FuiToast.success("Đã thêm bài hát vào danh sách nhạc nền!");
+            }
+
+            function deleteMusicTrack(id) {
+                if (confirm("Bạn có chắc muốn xóa bài hát này khỏi danh sách?")) {
+                    let tracks = JSON.parse(localStorage.getItem("custom_music_tracks")) || [];
+                    tracks = tracks.filter(t => t.id !== id);
+                    localStorage.setItem("custom_music_tracks", JSON.stringify(tracks));
+
+                    loadMusicTable();
+                    checkAndHookMusic();
+                    FuiToast.success("Đã xóa bài hát!");
+                }
+            }
+
+            // === NEWS TAB LOGIC ===
+            let newsImgBase64 = "";
+
+            function uploadNewsImg(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        newsImgBase64 = e.target.result;
+                        document.getElementById("news-image").value = "Đã chọn file ảnh";
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function loadNewsTable() {
+                const articles = JSON.parse(localStorage.getItem("news_articles")) || [];
+                const tbody = document.getElementById("news-table-body");
+                tbody.innerHTML = "";
+
+                if (articles.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-muted-foreground">Chưa có bài viết nào.</td></tr>`;
+                    return;
+                }
+
+                articles.forEach(art => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-b border-border py-2";
+                    tr.innerHTML = `
+                        <td class="py-2"><img src="${art.image}" class="w-10 h-10 object-cover rounded-md"></td>
+                        <td class="py-2 font-semibold line-clamp-1 max-w-[200px]">${art.title}</td>
+                        <td class="py-2 text-muted-foreground line-clamp-1 max-w-[250px]">${art.summary}</td>
+                        <td class="py-2">${art.date}</td>
+                        <td class="py-2 text-right">
+                            <button class="text-primary mr-2" onclick="editNews('${art.id}')"><i class="ri-edit-line"></i> Sửa</button>
+                            <button class="text-red-500" onclick="deleteNews('${art.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function saveNews() {
+                const id = document.getElementById("news-id").value;
+                const title = document.getElementById("news-title").value;
+                const summary = document.getElementById("news-summary").value;
+                const content = document.getElementById("news-content").value;
+                const date = document.getElementById("news-date").value || new Date().toISOString().split('T')[0];
+                
+                let image = document.getElementById("news-image").value;
+                if (image === "Đã chọn file ảnh") {
+                    image = newsImgBase64;
+                }
+
+                if (!title || !summary || !content) {
+                    FuiToast.error("Vui lòng nhập đầy đủ thông tin bài viết!");
+                    return;
+                }
+
+                let articles = JSON.parse(localStorage.getItem("news_articles")) || [];
+
+                if (id) {
+                    // Update
+                    articles = articles.map(art => {
+                        if (art.id === id) {
+                            return { id, title, summary, content, date, image: image || art.image };
+                        }
+                        return art;
+                    });
+                    FuiToast.success("Đã cập nhật bài viết!");
+                } else {
+                    // Create
+                    const newId = "news-" + Date.now();
+                    articles.unshift({
+                        id: newId,
+                        title,
+                        summary,
+                        content,
+                        date,
+                        image: image || "https://i.ibb.co/b5cYhf5m/image.png"
+                    });
+                    FuiToast.success("Đã đăng bài viết mới!");
+                }
+
+                localStorage.setItem("news_articles", JSON.stringify(articles));
+                resetNewsForm();
+                loadNewsTable();
+            }
+
+            function editNews(id) {
+                const articles = JSON.parse(localStorage.getItem("news_articles")) || [];
+                const art = articles.find(a => a.id === id);
+                if (art) {
+                    document.getElementById("news-id").value = art.id;
+                    document.getElementById("news-title").value = art.title;
+                    document.getElementById("news-summary").value = art.summary;
+                    document.getElementById("news-content").value = art.content;
+                    document.getElementById("news-date").value = art.date;
+                    document.getElementById("news-image").value = art.image;
+                    
+                    document.getElementById("news-form-title").textContent = "Chỉnh sửa bài viết";
+                    document.getElementById("btn-cancel-news").classList.remove("hidden");
+                }
+            }
+
+            function deleteNews(id) {
+                if (confirm("Bạn có chắc muốn xóa bài viết này không?")) {
+                    let articles = JSON.parse(localStorage.getItem("news_articles")) || [];
+                    articles = articles.filter(a => a.id !== id);
+                    localStorage.setItem("news_articles", JSON.stringify(articles));
+                    loadNewsTable();
+                    FuiToast.success("Đã xóa bài viết!");
+                }
+            }
+
+            function resetNewsForm() {
+                document.getElementById("news-id").value = "";
+                document.getElementById("news-title").value = "";
+                document.getElementById("news-summary").value = "";
+                document.getElementById("news-content").value = "";
+                document.getElementById("news-date").value = "";
+                document.getElementById("news-image").value = "";
+                document.getElementById("news-image-file").value = "";
+                newsImgBase64 = "";
+                document.getElementById("news-form-title").textContent = "Đăng bài viết mới";
+                document.getElementById("btn-cancel-news").classList.add("hidden");
+            }
+
+            // === PRODUCTS TAB LOGIC ===
+            let prodImgBase64 = "";
+
+            function uploadProdImg(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        prodImgBase64 = e.target.result;
+                        document.getElementById("prod-image").value = "Đã chọn file ảnh";
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function loadProductsTable() {
+                const products = JSON.parse(localStorage.getItem("product_list")) || [];
+                const tbody = document.getElementById("products-table-body");
+                tbody.innerHTML = "";
+
+                if (products.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-muted-foreground">Chưa có sản phẩm nào.</td></tr>`;
+                    return;
+                }
+
+                products.forEach(prod => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-b border-border py-2";
+                    tr.innerHTML = `
+                        <td class="py-2"><img src="${prod.image}" class="w-10 h-10 object-cover rounded-md"></td>
+                        <td class="py-2 font-semibold">${prod.name}</td>
+                        <td class="py-2 text-primary font-bold">${formatVND(prod.price)}</td>
+                        <td class="py-2 text-muted-foreground line-clamp-1 max-w-[200px]">${prod.description || ''}</td>
+                        <td class="py-2 text-right">
+                            <button class="text-primary mr-2" onclick="editProduct('${prod.id}')"><i class="ri-edit-line"></i> Sửa</button>
+                            <button class="text-red-500" onclick="deleteProduct('${prod.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function saveProduct() {
+                const id = document.getElementById("prod-id").value;
+                const name = document.getElementById("prod-name").value;
+                const price = parseInt(document.getElementById("prod-price").value) || 0;
+                const description = document.getElementById("prod-desc").value;
+                
+                let image = document.getElementById("prod-image").value;
+                if (image === "Đã chọn file ảnh") {
+                    image = prodImgBase64;
+                }
+
+                if (!name || price <= 0) {
+                    FuiToast.error("Vui lòng nhập tên sản phẩm và giá cả hợp lệ!");
+                    return;
+                }
+
+                let products = JSON.parse(localStorage.getItem("product_list")) || [];
+
+                if (id) {
+                    // Update
+                    products = products.map(p => {
+                        if (p.id === id) {
+                            return { id, name, price, description, image: image || p.image };
+                        }
+                        return p;
+                    });
+                    FuiToast.success("Đã cập nhật sản phẩm!");
+                } else {
+                    // Create
+                    const newId = "prod-" + Date.now();
+                    products.push({
+                        id: newId,
+                        name,
+                        price,
+                        description,
+                        image: image || "https://i.ibb.co/b5cYhf5m/image.png"
+                    });
+                    FuiToast.success("Đã đăng sản phẩm mới!");
+                }
+
+                localStorage.setItem("product_list", JSON.stringify(products));
+                resetProdForm();
+                loadProductsTable();
+            }
+
+            function editProduct(id) {
+                const products = JSON.parse(localStorage.getItem("product_list")) || [];
+                const prod = products.find(p => p.id === id);
+                if (prod) {
+                    document.getElementById("prod-id").value = prod.id;
+                    document.getElementById("prod-name").value = prod.name;
+                    document.getElementById("prod-price").value = prod.price;
+                    document.getElementById("prod-desc").value = prod.description;
+                    document.getElementById("prod-image").value = prod.image;
+                    
+                    document.getElementById("prod-form-title").textContent = "Chỉnh sửa sản phẩm";
+                    document.getElementById("btn-cancel-prod").classList.remove("hidden");
+                }
+            }
+
+            function deleteProduct(id) {
+                if (confirm("Bạn có chắc muốn xóa sản phẩm này không?")) {
+                    let products = JSON.parse(localStorage.getItem("product_list")) || [];
+                    products = products.filter(p => p.id !== id);
+                    localStorage.setItem("product_list", JSON.stringify(products));
+                    loadProductsTable();
+                    FuiToast.success("Đã xóa sản phẩm!");
+                }
+            }
+
+            function resetProdForm() {
+                document.getElementById("prod-id").value = "";
+                document.getElementById("prod-name").value = "";
+                document.getElementById("prod-price").value = "";
+                document.getElementById("prod-desc").value = "";
+                document.getElementById("prod-image").value = "";
+                document.getElementById("prod-image-file").value = "";
+                prodImgBase64 = "";
+                document.getElementById("prod-form-title").textContent = "Đăng sản phẩm mới";
+                document.getElementById("btn-cancel-prod").classList.add("hidden");
+            }
+
+            // === GUESTBOOK TAB LOGIC ===
+            function loadGuestbookTable() {
+                const messages = JSON.parse(localStorage.getItem("guestbook_messages")) || [];
+                const tbody = document.getElementById("guestbook-table-body");
+                tbody.innerHTML = "";
+
+                if (messages.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-muted-foreground">Chưa có lời nhắn nào.</td></tr>`;
+                    return;
+                }
+
+                messages.forEach(msg => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-b border-border py-2";
+                    tr.innerHTML = `
+                        <td class="py-2 font-semibold">${msg.name}</td>
+                        <td class="py-2 text-lg">${msg.emoji}</td>
+                        <td class="py-2 text-muted-foreground max-w-[300px] truncate">${msg.message}</td>
+                        <td class="py-2 text-xs text-muted-foreground">${msg.date}</td>
+                        <td class="py-2 text-right">
+                            <button class="text-red-500" onclick="deleteGuestbookMessage('${msg.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function deleteGuestbookMessage(id) {
+                if (confirm("Bạn có chắc muốn xóa lời nhắn này không?")) {
+                    let messages = JSON.parse(localStorage.getItem("guestbook_messages")) || [];
+                    messages = messages.filter(m => m.id !== id);
+                    localStorage.setItem("guestbook_messages", JSON.stringify(messages));
+                    loadGuestbookTable();
+                    FuiToast.success("Đã xóa lời nhắn!");
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                loadProfileFields();
+                loadSocialsTable();
+                loadPaymentTable();
+                loadMusicTable();
+                loadNewsTable();
+                loadProductsTable();
+                loadGuestbookTable();
+            });
+        </script>
+    </body>
+</html>
