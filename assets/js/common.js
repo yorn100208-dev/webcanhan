@@ -738,13 +738,13 @@ function loadGuestbookMessages() {
         item.style.alignItems = "flex-start";
 
         item.innerHTML = `
-            <div style="font-size: 1.5rem; background: var(--primary-glow); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05);">${msg.emoji || '✨'}</div>
+            <div style="font-size: 1.5rem; background: var(--primary-glow); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05);">${escapeHTML(msg.emoji || '✨')}</div>
             <div style="flex: 1;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">${msg.name}</strong>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">${msg.date}</span>
+                    <strong style="color: var(--text-main); font-size: 0.85rem;">${escapeHTML(msg.name)}</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">${escapeHTML(msg.date)}</span>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; white-space: pre-wrap;">${msg.message}</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; white-space: pre-wrap;">${escapeHTML(msg.message)}</p>
             </div>
         `;
         listContainer.appendChild(item);
@@ -1106,3 +1106,110 @@ function initTiltEffect() {
         target.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
     });
 }
+
+// ==========================================
+// FEATURE: ADVANCED ANTI-DEVTOOLS & SECURITY
+// ==========================================
+(function() {
+    // 1. Chặn click chuột phải
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    
+    // 2. Chặn các phím tắt mở DevTools, View Source, Save Page
+    document.addEventListener('keydown', e => {
+        // Chặn F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+        // Chặn Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+        if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) {
+            e.preventDefault();
+            return false;
+        }
+        // Chặn Ctrl+U (View Source) và Ctrl+S (Save Page)
+        if (e.ctrlKey && ['U', 'S'].includes(e.key.toUpperCase())) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // 3. Vòng lặp debugger vô hạn (Treo màn hình F12 nếu cố tình mở trước hoặc lách luật)
+    setInterval(function() {
+        (function() {
+            return false;
+        }["constructor"]("debugger")["call"]());
+    }, 100);
+    
+    // 4. Liên tục xóa Console để không chạy được script can thiệp
+    setInterval(() => {
+        console.clear();
+    }, 500);
+
+    // 5. Chống sao chép, bôi đen văn bản và kéo thả hình ảnh
+    document.addEventListener('selectstart', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('cut', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+
+    // 6. Làm mờ và hiển thị màn hình khóa bảo mật khi mất tiêu điểm (Khi chụp màn hình, mở Snipping Tool hoặc chuyển tab)
+    let securityOverlay = null;
+
+    function showSecurityOverlay() {
+        if (!securityOverlay) {
+            securityOverlay = document.createElement('div');
+            securityOverlay.id = 'security-screenshot-overlay';
+            securityOverlay.style.position = 'fixed';
+            securityOverlay.style.top = '0';
+            securityOverlay.style.left = '0';
+            securityOverlay.style.width = '100vw';
+            securityOverlay.style.height = '100vh';
+            securityOverlay.style.backgroundColor = 'rgba(10, 10, 12, 0.98)';
+            securityOverlay.style.zIndex = '9999999';
+            securityOverlay.style.display = 'flex';
+            securityOverlay.style.flexDirection = 'column';
+            securityOverlay.style.alignItems = 'center';
+            securityOverlay.style.justifyContent = 'center';
+            securityOverlay.style.color = '#ffffff';
+            securityOverlay.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+            securityOverlay.style.textAlign = 'center';
+            securityOverlay.style.padding = '2rem';
+            securityOverlay.style.userSelect = 'none';
+            securityOverlay.innerHTML = `
+                <div style="font-size: 5rem; margin-bottom: 1.5rem; animation: pulse 2s infinite;">🤫</div>
+                <h1 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem; color: #ef4444; letter-spacing: 2px;">CHỤP CÁI GÌ ?</h1>
+                <p style="font-size: 1.2rem; color: #a1a1aa; max-width: 450px; line-height: 1.6; margin: 0 auto;">
+                    Chụp cái cmm à? <br>
+                    Không dễ thế đâu nhé! 
+                </p>
+                <style>
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); opacity: 1; }
+                        50% { transform: scale(1.1); opacity: 0.7; }
+                    }
+                </style>
+            `;
+            document.body.appendChild(securityOverlay);
+        }
+        document.body.style.filter = 'blur(15px)';
+    }
+
+    function hideSecurityOverlay() {
+        if (securityOverlay) {
+            securityOverlay.remove();
+            securityOverlay = null;
+        }
+        document.body.style.filter = 'none';
+    }
+
+    window.addEventListener('blur', showSecurityOverlay);
+    window.addEventListener('focus', hideSecurityOverlay);
+
+    // 7. Xóa clipboard (bộ nhớ tạm) khi nhấn phím PrintScreen
+    document.addEventListener('keyup', e => {
+        if (e.key === 'PrintScreen') {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('Nội dung được bảo mật bởi vantiendkhanh.id.vn');
+            }
+        }
+    });
+})();
