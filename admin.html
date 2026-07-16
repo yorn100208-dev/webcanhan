@@ -503,10 +503,30 @@
         <script src="./assets/js/libs/fuiToast.min.js"></script>
         <script src="./assets/js/common.js?v=4.6"></script>
         <script>
+            // SHA-256 Hashing helper
+            async function sha256(message) {
+                const msgBuffer = new TextEncoder().encode(message);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            // HTML Escaper for XSS protection
+            function escapeHTML(str) {
+                if (!str) return '';
+                return str.toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
             // Password verification
-            function verifyPassword() {
+            async function verifyPassword() {
                 const pass = document.getElementById("admin-password").value;
-                if (pass === "Khanh12341234") {
+                const hashed = await sha256(pass);
+                if (hashed === "c44a6173e185c11c223161eef3bc85a676c73c0dc0f9aa357dee23bcd7f11c4b") {
                     sessionStorage.setItem("admin_logged", "true");
                     document.getElementById("admin-login-overlay").remove();
                     document.getElementById("admin-dashboard-container").classList.remove("hidden");
@@ -655,11 +675,11 @@
                     const tr = document.createElement("tr");
                     tr.className = "border-b border-border py-2";
                     tr.innerHTML = `
-                        <td class="py-2 font-semibold">${soc.name}</td>
-                        <td class="py-2"><i class="${soc.icon} text-lg"></i> <code class="text-xs ml-1">${soc.icon}</code></td>
-                        <td class="py-2 text-muted-foreground max-w-[200px] truncate">${soc.url}</td>
+                        <td class="py-2 font-semibold">${escapeHTML(soc.name)}</td>
+                        <td class="py-2"><i class="${escapeHTML(soc.icon)} text-lg"></i> <code class="text-xs ml-1">${escapeHTML(soc.icon)}</code></td>
+                        <td class="py-2 text-muted-foreground max-w-[200px] truncate">${escapeHTML(soc.url)}</td>
                         <td class="py-2 text-right">
-                            <button class="text-red-500" onclick="deleteSocialLink('${soc.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                            <button class="text-red-500" onclick="deleteSocialLink('${escapeHTML(soc.id)}')"><i class="ri-delete-bin-line"></i> Xóa</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -719,12 +739,12 @@
                     const tr = document.createElement("tr");
                     tr.className = "border-b border-border py-2";
                     tr.innerHTML = `
-                        <td class="py-2"><img src="${pay.logoUrl || './assets/img/icon/acb.png'}" class="w-8 h-8 object-cover rounded-md bg-muted p-1"></td>
-                        <td class="py-2 font-semibold">${pay.bankName}</td>
-                        <td class="py-2 font-mono">${pay.accountNumber}</td>
-                        <td class="py-2">${pay.accountName}</td>
+                        <td class="py-2"><img src="${escapeHTML(pay.logoUrl) || './assets/img/icon/acb.png'}" class="w-8 h-8 object-cover rounded-md bg-muted p-1"></td>
+                        <td class="py-2 font-semibold">${escapeHTML(pay.bankName)}</td>
+                        <td class="py-2 font-mono">${escapeHTML(pay.accountNumber)}</td>
+                        <td class="py-2">${escapeHTML(pay.accountName)}</td>
                         <td class="py-2 text-right">
-                            <button class="text-red-500" onclick="deletePaymentAccount('${pay.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                            <button class="text-red-500" onclick="deletePaymentAccount('${escapeHTML(pay.id)}')"><i class="ri-delete-bin-line"></i> Xóa</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -785,10 +805,10 @@
                     const tr = document.createElement("tr");
                     tr.className = "border-b border-border py-2";
                     tr.innerHTML = `
-                        <td class="py-2 font-semibold">${track.title}</td>
-                        <td class="py-2 text-muted-foreground max-w-[300px] truncate">${track.url}</td>
+                        <td class="py-2 font-semibold">${escapeHTML(track.title)}</td>
+                        <td class="py-2 text-muted-foreground max-w-[300px] truncate">${escapeHTML(track.url)}</td>
                         <td class="py-2 text-right">
-                            <button class="text-red-500" onclick="deleteMusicTrack('${track.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                            <button class="text-red-500" onclick="deleteMusicTrack('${escapeHTML(track.id)}')"><i class="ri-delete-bin-line"></i> Xóa</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -859,13 +879,13 @@
                     const tr = document.createElement("tr");
                     tr.className = "border-b border-border py-2";
                     tr.innerHTML = `
-                        <td class="py-2"><img src="${art.image}" class="w-10 h-10 object-cover rounded-md"></td>
-                        <td class="py-2 font-semibold line-clamp-1 max-w-[200px]">${art.title}</td>
-                        <td class="py-2 text-muted-foreground line-clamp-1 max-w-[250px]">${art.summary}</td>
-                        <td class="py-2">${art.date}</td>
+                        <td class="py-2"><img src="${escapeHTML(art.image)}" class="w-10 h-10 object-cover rounded-md"></td>
+                        <td class="py-2 font-semibold line-clamp-1 max-w-[200px]">${escapeHTML(art.title)}</td>
+                        <td class="py-2 text-muted-foreground line-clamp-1 max-w-[250px]">${escapeHTML(art.summary)}</td>
+                        <td class="py-2">${escapeHTML(art.date)}</td>
                         <td class="py-2 text-right">
-                            <button class="text-primary mr-2" onclick="editNews('${art.id}')"><i class="ri-edit-line"></i> Sửa</button>
-                            <button class="text-red-500" onclick="deleteNews('${art.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                            <button class="text-primary mr-2" onclick="editNews('${escapeHTML(art.id)}')"><i class="ri-edit-line"></i> Sửa</button>
+                            <button class="text-red-500" onclick="deleteNews('${escapeHTML(art.id)}')"><i class="ri-delete-bin-line"></i> Xóa</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -987,13 +1007,13 @@
                     const tr = document.createElement("tr");
                     tr.className = "border-b border-border py-2";
                     tr.innerHTML = `
-                        <td class="py-2"><img src="${prod.image}" class="w-10 h-10 object-cover rounded-md"></td>
-                        <td class="py-2 font-semibold">${prod.name}</td>
+                        <td class="py-2"><img src="${escapeHTML(prod.image)}" class="w-10 h-10 object-cover rounded-md"></td>
+                        <td class="py-2 font-semibold">${escapeHTML(prod.name)}</td>
                         <td class="py-2 text-primary font-bold">${formatVND(prod.price)}</td>
-                        <td class="py-2 text-muted-foreground line-clamp-1 max-w-[200px]">${prod.description || ''}</td>
+                        <td class="py-2 text-muted-foreground line-clamp-1 max-w-[200px]">${escapeHTML(prod.description || '')}</td>
                         <td class="py-2 text-right">
-                            <button class="text-primary mr-2" onclick="editProduct('${prod.id}')"><i class="ri-edit-line"></i> Sửa</button>
-                            <button class="text-red-500" onclick="deleteProduct('${prod.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                            <button class="text-primary mr-2" onclick="editProduct('${escapeHTML(prod.id)}')"><i class="ri-edit-line"></i> Sửa</button>
+                            <button class="text-red-500" onclick="deleteProduct('${escapeHTML(prod.id)}')"><i class="ri-delete-bin-line"></i> Xóa</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -1097,12 +1117,12 @@
                     const tr = document.createElement("tr");
                     tr.className = "border-b border-border py-2";
                     tr.innerHTML = `
-                        <td class="py-2 font-semibold">${msg.name}</td>
-                        <td class="py-2 text-lg">${msg.emoji}</td>
-                        <td class="py-2 text-muted-foreground max-w-[300px] truncate">${msg.message}</td>
-                        <td class="py-2 text-xs text-muted-foreground">${msg.date}</td>
+                        <td class="py-2 font-semibold">${escapeHTML(msg.name)}</td>
+                        <td class="py-2 text-lg">${escapeHTML(msg.emoji)}</td>
+                        <td class="py-2 text-muted-foreground max-w-[300px] truncate">${escapeHTML(msg.message)}</td>
+                        <td class="py-2 text-xs text-muted-foreground">${escapeHTML(msg.date)}</td>
                         <td class="py-2 text-right">
-                            <button class="text-red-500" onclick="deleteGuestbookMessage('${msg.id}')"><i class="ri-delete-bin-line"></i> Xóa</button>
+                            <button class="text-red-500" onclick="deleteGuestbookMessage('${escapeHTML(msg.id)}')"><i class="ri-delete-bin-line"></i> Xóa</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
