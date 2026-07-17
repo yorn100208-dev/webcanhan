@@ -419,31 +419,33 @@
     }
 
     .verified-badge {
-      width: 22px;
-      height: 22px;
-      display: inline-block;
+      width: 19px;
+      height: 19px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       vertical-align: middle;
-      margin-left: 0.25rem;
-      filter: drop-shadow(0 0 5px var(--secondary-glow));
-      animation: pulse-verified 2.5s infinite alternate ease-in-out;
+      margin-left: 0.35rem;
+      filter: drop-shadow(0 0 4px var(--primary-glow));
+      animation: pulse-verified 2s infinite ease-in-out;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       -webkit-text-fill-color: initial;
     }
 
     .verified-badge:hover {
-      transform: scale(1.2) rotate(15deg);
-      filter: drop-shadow(0 0 12px var(--secondary));
+      transform: scale(1.15) rotate(8deg);
+      filter: drop-shadow(0 0 8px var(--primary));
     }
 
     @keyframes pulse-verified {
-      0% {
+      0%, 100% {
         transform: scale(1);
-        filter: drop-shadow(0 0 3px var(--secondary-glow));
+        filter: drop-shadow(0 0 3px var(--primary-glow));
       }
-      100% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 8px var(--secondary-glow));
+      50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 6px var(--primary-glow));
       }
     }
 
@@ -1700,12 +1702,12 @@
           <svg class="verified-badge" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" title="Tài khoản chính chủ">
             <defs>
               <linearGradient id="verified-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="var(--secondary)" />
-                <stop offset="100%" stop-color="var(--primary)" />
+                <stop offset="0%" stop-color="#00c6ff" />
+                <stop offset="100%" stop-color="#0072ff" />
               </linearGradient>
             </defs>
             <path d="M12 2.05a2 2 0 0 1 1.73 1l.5.86a2 2 0 0 0 1.73 1l1 .17a2 2 0 0 1 1.45 1.45l.17 1a2 2 0 0 0 1 1.73l.86.5a2 2 0 0 1 0 3.46l-.86.5a2 2 0 0 0-1 1.73l-.17 1a2 2 0 0 1-1.45 1.45l-1 .17a2 2 0 0 0-1.73 1l-.5.86a2 2 0 0 1-3.46 0l-.5-.86a2 2 0 0 0-1.73-1l-1-.17a2 2 0 0 1-1.45-1.45l-.17-1a2 2 0 0 0-1-1.73l-.86-.5a2 2 0 0 1 0-3.46l.86-.5a2 2 0 0 0 1 1.73l.17-1a2 2 0 0 1 1.45-1.45l1-.17a2 2 0 0 0 1.73-1l.5-.86A2 2 0 0 1 12 2.05z" fill="url(#verified-gradient)" />
-            <path d="M9 11.5L11 13.5L15.5 9" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9 11.5L11 13.5L15.5 9" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </h1>
         <p class="profile-title">Full Stack Developer</p>
@@ -1863,30 +1865,6 @@
             </div>
           </div>
 
-          <!-- Guestbook Form & List -->
-          <div class="glass-card">
-            <h3 class="section-title"><i class="ri-chat-smile-line"></i> Lưu bút & Góp ý</h3>
-            <p style="margin-bottom: 1.25rem; color: var(--text-muted); font-size: 0.9rem;">
-              Hãy để lại lời chúc, góp ý hoặc một dòng nhắn gửi tại đây để lưu giữ kỷ niệm nhé!
-            </p>
-            <form id="guestbook-form" onsubmit="submitGuestbookMessage(event)" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
-              <div style="display: grid; grid-template-columns: 1fr 120px; gap: 0.75rem;">
-                <input type="text" id="guestbook-name" placeholder="Tên của bạn..." required style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.6rem 0.8rem; color: white; outline: none; font-size: 0.9rem;">
-                <select id="guestbook-emoji" style="background: rgba(13, 20, 38, 0.8); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.6rem 0.8rem; color: white; outline: none; font-size: 0.9rem;">
-                  <option value="💻">💻 Coder</option>
-                  <option value="🚀">🚀 Designer</option>
-                  <option value="🔥">🔥 Hacker</option>
-                  <option value="☕">☕ Coffee</option>
-                  <option value="✨">✨ Guest</option>
-                </select>
-              </div>
-              <textarea id="guestbook-msg" placeholder="Nhập lời nhắn của bạn..." required style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.6rem 0.8rem; color: white; outline: none; font-size: 0.9rem; resize: none; height: 80px;"></textarea>
-              <button type="submit" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; color: white; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; transition: var(--transition); font-size: 0.9rem; align-self: flex-end;">Gửi Lời Nhắn</button>
-            </form>
-            <div id="guestbook-messages-list" style="display: flex; flex-direction: column; gap: 0.8rem; max-height: 280px; overflow-y: auto; padding-right: 0.5rem;">
-              <!-- Loaded Dynamically -->
-            </div>
-          </div>
         </div>
 
         <!-- Tab 4: Donate -->
