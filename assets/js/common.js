@@ -1,5 +1,4 @@
 // Common JS helper for profile data, news, and products using LocalStorage
-
 const DEFAULT_NEWS = [
     {
         id: "news-1",
@@ -1133,17 +1132,21 @@ function initTiltEffect() {
         }
     });
 
-    // 3. Vòng lặp debugger vô hạn (Treo màn hình F12 nếu cố tình mở trước hoặc lách luật)
+    // 3. Vòng lặp debugger vô hạn (Treo màn hình F12 nếu cố tình mở trước hoặc lách luật) (Đã tắt để tránh treo trang)
+    /*
     setInterval(function() {
         (function() {
             return false;
         }["constructor"]("debugger")["call"]());
     }, 100);
+    */
     
-    // 4. Liên tục xóa Console để không chạy được script can thiệp
+    // 4. Liên tục xóa Console để không chạy được script can thiệp (Đã tắt để tối ưu hiệu năng)
+    /*
     setInterval(() => {
         console.clear();
     }, 500);
+    */
 
     // 5. Chống sao chép, bôi đen văn bản và kéo thả hình ảnh
     document.addEventListener('selectstart', e => e.preventDefault());
@@ -1151,7 +1154,8 @@ function initTiltEffect() {
     document.addEventListener('cut', e => e.preventDefault());
     document.addEventListener('dragstart', e => e.preventDefault());
 
-    // 6. Làm mờ và hiển thị màn hình khóa bảo mật khi mất tiêu điểm (Khi chụp màn hình, mở Snipping Tool hoặc chuyển tab)
+    // 6. Làm mờ và hiển thị màn hình khóa bảo mật khi mất tiêu điểm (Đã tắt để tránh đơ giao diện khi chuyển tab)
+    /*
     let securityOverlay = null;
 
     function showSecurityOverlay() {
@@ -1159,35 +1163,7 @@ function initTiltEffect() {
             securityOverlay = document.createElement('div');
             securityOverlay.id = 'security-screenshot-overlay';
             securityOverlay.style.position = 'fixed';
-            securityOverlay.style.top = '0';
-            securityOverlay.style.left = '0';
-            securityOverlay.style.width = '100vw';
-            securityOverlay.style.height = '100vh';
-            securityOverlay.style.backgroundColor = 'rgba(10, 10, 12, 0.98)';
-            securityOverlay.style.zIndex = '9999999';
-            securityOverlay.style.display = 'flex';
-            securityOverlay.style.flexDirection = 'column';
-            securityOverlay.style.alignItems = 'center';
-            securityOverlay.style.justifyContent = 'center';
-            securityOverlay.style.color = '#ffffff';
-            securityOverlay.style.fontFamily = 'system-ui, -apple-system, sans-serif';
-            securityOverlay.style.textAlign = 'center';
-            securityOverlay.style.padding = '2rem';
-            securityOverlay.style.userSelect = 'none';
-            securityOverlay.innerHTML = `
-                <div style="font-size: 5rem; margin-bottom: 1.5rem; animation: pulse 2s infinite;">🤫</div>
-                <h1 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem; color: #ef4444; letter-spacing: 2px;">CHỤP CÁI GÌ ?</h1>
-                <p style="font-size: 1.2rem; color: #a1a1aa; max-width: 450px; line-height: 1.6; margin: 0 auto;">
-                    Chụp cái cmm à? <br>
-                    Không dễ thế đâu nhé! 
-                </p>
-                <style>
-                    @keyframes pulse {
-                        0%, 100% { transform: scale(1); opacity: 1; }
-                        50% { transform: scale(1.1); opacity: 0.7; }
-                    }
-                </style>
-            `;
+            ...
             document.body.appendChild(securityOverlay);
         }
         document.body.style.filter = 'blur(15px)';
@@ -1203,6 +1179,7 @@ function initTiltEffect() {
 
     window.addEventListener('blur', showSecurityOverlay);
     window.addEventListener('focus', hideSecurityOverlay);
+    */
 
     // 7. Xóa clipboard (bộ nhớ tạm) khi nhấn phím PrintScreen
     document.addEventListener('keyup', e => {

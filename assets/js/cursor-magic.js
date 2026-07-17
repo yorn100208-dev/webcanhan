@@ -1,8 +1,7 @@
 /* Premium Canvas-Based Cursor Magic Trail Effect by Văn Tiến Khánh */
 (function() {
-    // Disable on mobile devices to save battery/performance
+    // Check if mobile device to optimize performance
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    if (isMobile) return;
 
     // Check if canvas already exists to avoid duplicates
     if (document.getElementById("cursor-canvas")) return;
@@ -22,7 +21,7 @@
     
     let points = [];
     let sparkles = [];
-    const maxPoints = 15; // Length of the trail
+    const maxPoints = isMobile ? 8 : 15; // Shorter trail on mobile to save performance
 
     // Handle resizing
     function resizeCanvas() {
@@ -48,7 +47,7 @@
                 points.shift();
             }
             
-            if (Math.random() < 0.4) {
+            if (Math.random() < (isMobile ? 0.22 : 0.4)) {
                 spawnSparkle(mouse.x, mouse.y);
             }
             lastMouse = { x: mouse.x, y: mouse.y };
@@ -67,7 +66,7 @@
                     points.shift();
                 }
                 
-                if (Math.random() < 0.4) {
+                if (Math.random() < (isMobile ? 0.22 : 0.4)) {
                     spawnSparkle(mouse.x, mouse.y);
                 }
                 lastMouse = { x: mouse.x, y: mouse.y };
