@@ -54,11 +54,6 @@ const DEFAULT_PAYMENTS = [
     { id: "pay-1", bankName: "Vietcombank", accountNumber: "1064827480", accountName: "VAN TIEN KHANH", logoUrl: "https://api.vietqr.io/img/VCB.png" }
 ];
 
-const DEFAULT_GUESTBOOK = [
-    { id: "msg-1", name: "Nguyễn Hoàng Nam", emoji: "💻", message: "Web xịn đét anh ơi! Hiệu ứng glassmorphism nhìn cực kỳ chuyên nghiệp và mượt.", date: "2026-07-10 14:32" },
-    { id: "msg-2", name: "Lê Minh Triết", emoji: "🔥", message: "Em rất thích bộ Telegram payment verification bot của anh. Mong anh ra mắt thêm nhiều project open source chất lượng hơn nữa!", date: "2026-07-11 08:15" },
-    { id: "msg-3", name: "Khách viếng thăm", emoji: "✨", message: "Giao diện tối ưu SEO tốt ghê, load cực kỳ nhanh luôn.", date: "2026-07-11 10:05" }
-];
 
 // Check if old owner values or empty localStorage to perform migration
 const isOldOwner = !localStorage.getItem("profile_name") || localStorage.getItem("profile_name") === "Vuong Thanh Dieu" || localStorage.getItem("profile_name") === "Vương Thanh Diệu";
@@ -138,9 +133,7 @@ if (!localStorage.getItem("product_list") || localStorage.getItem("product_list"
 if (!localStorage.getItem("custom_music_tracks") || JSON.parse(localStorage.getItem("custom_music_tracks")).length === 0) {
     localStorage.setItem("custom_music_tracks", JSON.stringify(DEFAULT_MUSIC));
 }
-if (!localStorage.getItem("guestbook_messages")) {
-    localStorage.setItem("guestbook_messages", JSON.stringify(DEFAULT_GUESTBOOK));
-}
+
 
 // Force update profile_bio if it has the old content
 if (localStorage.getItem("profile_bio") && localStorage.getItem("profile_bio").includes("I am a freelance programmer")) {
@@ -694,7 +687,6 @@ window.closeNewsModalOnOuterClick = function(evt) {
 document.addEventListener("DOMContentLoaded", () => {
     updateProfileDOM();
     initMusicPlayer();
-    initGuestbook();
     initTerminal();
     initTiltEffect();
 
@@ -706,93 +698,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.head.appendChild(script);
     }
 });
-
-// ==========================================
-// FEATURE: INTERACTIVE GUESTBOOK LOGIC
-// ==========================================
-function initGuestbook() {
-    loadGuestbookMessages();
-}
-
-function loadGuestbookMessages() {
-    const listContainer = document.getElementById("guestbook-messages-list");
-    if (!listContainer) return;
-
-    const messages = JSON.parse(localStorage.getItem("guestbook_messages")) || DEFAULT_GUESTBOOK;
-    listContainer.innerHTML = "";
-
-    if (messages.length === 0) {
-        listContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">Chưa có lời nhắn nào. Hãy là người đầu tiên để lại lời chúc! 😊</div>`;
-        return;
-    }
-
-    messages.forEach(msg => {
-        const item = document.createElement("div");
-        item.style.background = "rgba(255, 255, 255, 0.02)";
-        item.style.border = "1px solid var(--border-color)";
-        item.style.borderRadius = "12px";
-        item.style.padding = "0.75rem 1rem";
-        item.style.display = "flex";
-        item.style.gap = "0.75rem";
-        item.style.alignItems = "flex-start";
-
-        item.innerHTML = `
-            <div style="font-size: 1.5rem; background: var(--primary-glow); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05);">${escapeHTML(msg.emoji || '✨')}</div>
-            <div style="flex: 1;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                    <strong style="color: var(--text-main); font-size: 0.85rem;">${escapeHTML(msg.name)}</strong>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">${escapeHTML(msg.date)}</span>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; white-space: pre-wrap;">${escapeHTML(msg.message)}</p>
-            </div>
-        `;
-        listContainer.appendChild(item);
-    });
-}
-
-window.submitGuestbookMessage = function(event) {
-    event.preventDefault();
-    const nameEl = document.getElementById("guestbook-name");
-    const emojiEl = document.getElementById("guestbook-emoji");
-    const msgEl = document.getElementById("guestbook-msg");
-
-    if (!nameEl || !msgEl) return;
-
-    const name = nameEl.value.trim();
-    const emoji = emojiEl ? emojiEl.value : "✨";
-    const message = msgEl.value.trim();
-
-    if (!name || !message) return;
-
-    const messages = JSON.parse(localStorage.getItem("guestbook_messages")) || DEFAULT_GUESTBOOK;
-    const now = new Date();
-    const dateStr = now.getFullYear() + '-' + 
-                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                    String(now.getDate()).padStart(2, '0') + ' ' + 
-                    String(now.getHours()).padStart(2, '0') + ':' + 
-                    String(now.getMinutes()).padStart(2, '0');
-
-    const newMsg = {
-        id: "msg-" + Date.now(),
-        name,
-        emoji,
-        message,
-        date: dateStr
-    };
-
-    messages.unshift(newMsg);
-    localStorage.setItem("guestbook_messages", JSON.stringify(messages));
-
-    nameEl.value = "";
-    msgEl.value = "";
-
-    loadGuestbookMessages();
-    if (window.showToast) {
-        showToast("Đã gửi lời nhắn thành công! Cảm ơn bạn 💖");
-    } else {
-        alert("Đã gửi lời nhắn!");
-    }
-};
 
 // ==========================================
 // FEATURE: TERMINAL CLI SYSTEM LOGIC
